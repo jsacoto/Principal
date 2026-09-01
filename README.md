@@ -1,64 +1,123 @@
-<div align="center">
-  <img src="https://avatars.githubusercontent.com/u/59888476?v=4" width="150" alt="Jairo Sacoto">
-  <h1>Jairo Sacoto, PhD</h1>
-  <p><strong>Investigación · Docencia · Divulgación tecnológica</strong></p>
-  <p>Redes de Telecomunicaciones · Transformación Digital · Internet de las Cosas</p>
-  <p>
-    <a href="#investigacion">Investigación</a> •
-    <a href="#docencia">Docencia</a> •
-    <a href="#divulgacion">Tech Talk con Jairo</a>
-  </p>
-  <p>
-    <img src="https://img.shields.io/badge/Telecomunicaciones-5G%20%7C%206G-00629B" alt="Telecomunicaciones 5G y 6G">
-    <img src="https://img.shields.io/badge/IoT-Edge%20%7C%20Fog%20%7C%20Cloud-F58220" alt="IoT, Edge, Fog y Cloud">
-    <img src="https://img.shields.io/badge/Transformación-Digital-2E8B57" alt="Transformación Digital">
-  </p>
-</div>
+<p align="center">
+  <img src="./assets/profile-header.svg" width="100%" alt="Jairo Sacoto — Investigación, docencia y divulgación tecnológica">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/PhD-Telecomunicaciones-0C71B9?style=flat-square" alt="PhD en Telecomunicaciones">
+  <img src="https://img.shields.io/badge/Senior_Member-IEEE-0B2E67?style=flat-square&logo=ieee&logoColor=white" alt="IEEE Senior Member">
+  <img src="https://img.shields.io/badge/GIHP4C-Investigación-2DA9E8?style=flat-square" alt="GIHP4C">
+  <img src="https://img.shields.io/badge/UPS-Ecuador-06183D?style=flat-square" alt="Universidad Politécnica Salesiana, Ecuador">
+</p>
+
+<p align="center">
+  <a href="#perfil">Perfil</a> ·
+  <a href="#investigacion">Investigación</a> ·
+  <a href="#docencia">Docencia</a> ·
+  <a href="#divulgacion">Tech Talk</a>
+</p>
 
 ---
+
+<a id="perfil"></a>
+
+## Perfil profesional
+
+<table>
+  <tr>
+    <td width="170" align="center">
+      <img src="https://avatars.githubusercontent.com/u/59888476?v=4" width="135" alt="Jairo Sacoto">
+    </td>
+    <td>
+      Soy <strong>Jairo Sacoto, PhD en Telecomunicaciones</strong>, investigador y docente de la
+      <strong>Universidad Politécnica Salesiana, Ecuador</strong>, coordinador del grupo de investigación
+      <strong>GIHP4C</strong> y Senior Member IEEE. Mi trabajo conecta la investigación aplicada, la formación
+      universitaria y la transferencia de conocimiento para desarrollar soluciones tecnológicas con impacto
+      académico, organizacional y social.
+    </td>
+  </tr>
+</table>
+
+Mi actividad se orienta al diseño, evaluación y optimización de redes y sistemas inteligentes, combinando **telecomunicaciones, IoT, Edge/Fog/Cloud Computing, inteligencia artificial y transformación digital**.
 
 <a id="investigacion"></a>
 
 ## Investigación
 
-Soy investigador y docente de la **Universidad Politécnica Salesiana, Ecuador**, y coordinador del grupo de investigación **GIHP4C**. Mi trabajo se centra en el estudio y desarrollo de soluciones para redes de telecomunicaciones inteligentes, ecosistemas IoT y procesos de transformación digital.
+| Línea | Enfoque |
+|---|---|
+| **📡 Redes de telecomunicaciones** | Arquitecturas 5G/6G, rendimiento, optimización, calidad de servicio y economía de redes. |
+| **🌐 Internet de las Cosas** | Massive IoT, LPWAN, ciudades inteligentes y entornos conectados. |
+| **☁️ Edge, Fog y Cloud Computing** | Arquitecturas distribuidas, simulación, orquestación y procesamiento de baja latencia. |
+| **🚀 Transformación Digital** | Modelos de madurez, gobierno tecnológico, OKR/KPI y transformación de la educación superior. |
+| **🧠 Inteligencia y analítica** | IA, optimización y ciencia de datos aplicadas a redes, organizaciones y sistemas distribuidos. |
 
-Mis principales líneas de investigación son:
-
-- **Redes de telecomunicaciones:** arquitecturas 5G/6G, rendimiento, optimización y economía de redes.
-- **Internet de las Cosas:** Massive IoT, ciudades inteligentes y arquitecturas Edge, Fog y Cloud Computing.
-- **Transformación Digital:** modelos de madurez, gobierno tecnológico, indicadores y transformación de instituciones de educación superior.
-- **Tecnologías inteligentes:** aplicación de inteligencia artificial, simulación y analítica de datos a sistemas distribuidos.
-
-El propósito de mi investigación es convertir el conocimiento científico en soluciones tecnológicas con impacto académico, organizacional y social.
+> **Propósito:** transformar conocimiento científico en arquitecturas, modelos y herramientas que contribuyan al desarrollo tecnológico y social.
 
 <a id="docencia"></a>
 
 ## Docencia
 
-Como docente universitario, promuevo un aprendizaje práctico, reproducible y orientado a la resolución de problemas. Estos espacios reunirán progresivamente guías, conjuntos de datos, laboratorios, configuraciones y código:
+Promuevo un aprendizaje práctico, reproducible y orientado a proyectos. Las siguientes páginas reunirán progresivamente guías, conjuntos de datos, código, configuraciones y laboratorios:
 
-| Asignatura | Contenido principal | Página académica |
-|---|---|---|
-| **Análisis Multivariado** | PCA, análisis factorial, LDA/QDA, MANOVA y regresión multivariante | [Acceder al material y código →](./analisis-multivariado/) |
-| **Redes de Computadoras** | Switching, VLAN, routing, servicios IP, seguridad y laboratorios Cisco | [Acceder al material y laboratorios →](./redes-de-computadoras/) |
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>📊 Análisis Multivariado</h3>
+      <p>PCA, análisis factorial, LDA/QDA, MANOVA, regresión multivariante, prácticas y código en R y Python.</p>
+      <a href="./analisis-multivariado/">
+        <img src="https://img.shields.io/badge/EXPLORAR-ANÁLISIS_MULTIVARIADO-0C71B9?style=for-the-badge" alt="Explorar Análisis Multivariado">
+      </a>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🖧 Redes de Computadoras</h3>
+      <p>Switching, VLAN, routing, servicios IP, seguridad, Cisco IOS y laboratorios de Packet Tracer.</p>
+      <a href="./redes-de-computadoras/">
+        <img src="https://img.shields.io/badge/EXPLORAR-REDES_DE_COMPUTADORAS-0B2E67?style=for-the-badge" alt="Explorar Redes de Computadoras">
+      </a>
+    </td>
+  </tr>
+</table>
 
-> 🚧 Ambas páginas están en construcción y se actualizarán conforme se incorporen nuevos recursos académicos.
+> 🚧 Las páginas académicas están en construcción y se actualizarán conforme se incorporen nuevos recursos.
 
 <a id="divulgacion"></a>
 
 ## Divulgación tecnológica
 
-### 🎙️ Tech Talk con Jairo
-
-**Tech Talk con Jairo** es un espacio de divulgación dedicado a acercar la investigación, la innovación y la transformación digital a una audiencia más amplia. A través de entrevistas y conversaciones con investigadores, profesionales y líderes tecnológicos, exploramos ideas, proyectos y tendencias que están transformando la sociedad.
-
-[![Ver Tech Talk con Jairo en YouTube](https://img.shields.io/badge/YouTube-Tech_Talk_con_Jairo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@tech_talk_con_jairo)
+<table>
+  <tr>
+    <td width="35%" align="center" valign="middle">
+      <img src="./assets/tech-talk-logo.png" width="280" alt="Logotipo de Tech Talk Podcast">
+    </td>
+    <td width="65%" valign="top">
+      <h3>🎙️ Tech Talk con Jairo</h3>
+      <p>
+        Un espacio para acercar la investigación, la innovación y la transformación digital a una audiencia
+        amplia. Mediante entrevistas y conversaciones con investigadores, profesionales y líderes tecnológicos,
+        exploramos las ideas, los proyectos y las tendencias que están transformando la sociedad.
+      </p>
+      <p><strong>Sigue el pódcast:</strong></p>
+      <p>
+        <a href="https://www.youtube.com">
+          <img src="https://img.shields.io/badge/YouTube-0B2E67?style=for-the-badge&logo=youtube&logoColor=white" alt="Tech Talk en YouTube">
+        </a>
+        <a href="https://www.instagram.com/tech_talk_con_jairo?igsi=MTYxZHBrYXM5Y3MzZw%3D%3D&amp;utm_source=qr">
+          <img src="https://img.shields.io/badge/Instagram-0C71B9?style=for-the-badge&logo=instagram&logoColor=white" alt="Tech Talk en Instagram">
+        </a>
+        <a href="https://www.tiktok.com/@techtalkjairo?_r=1&amp;_t=ZS-99NG9kViwTM">
+          <img src="https://img.shields.io/badge/TikTok-2DA9E8?style=for-the-badge&logo=tiktok&logoColor=white" alt="Tech Talk en TikTok">
+        </a>
+      </p>
+    </td>
+  </tr>
+</table>
 
 ---
 
-<div align="center">
-  <em>Investigar para comprender, enseñar para transformar y comunicar para conectar.</em>
+<p align="center">
+  <strong>Investigar para comprender · Enseñar para transformar · Comunicar para conectar</strong>
   <br><br>
-  <a href="https://github.com/jsacoto">Perfil de GitHub</a>
-</div>
+  <a href="https://github.com/jsacoto">
+    <img src="https://img.shields.io/badge/GitHub-jsacoto-06183D?style=flat-square&logo=github&logoColor=white" alt="Perfil de GitHub de Jairo Sacoto">
+  </a>
+</p>
