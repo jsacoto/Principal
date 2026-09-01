@@ -24,8 +24,8 @@
 
 <table>
   <tr>
-    <td width="170" align="center">
-      <img src="https://avatars.githubusercontent.com/u/59888476?v=4" width="135" alt="Jairo Sacoto">
+    <td width="220" align="center">
+      <img src="./assets/jairo-sacoto-caricature.png" width="195" alt="Caricatura profesional de Jairo Sacoto">
     </td>
     <td>
       Soy <strong>Jairo Sacoto, PhD en Telecomunicaciones</strong>, investigador y docente de la
@@ -50,6 +50,22 @@ Mi actividad se orienta al diseño, evaluación y optimización de redes y siste
 | **☁️ Edge, Fog y Cloud Computing** | Arquitecturas distribuidas, simulación, orquestación y procesamiento de baja latencia. |
 | **🚀 Transformación Digital** | Modelos de madurez, gobierno tecnológico, OKR/KPI y transformación de la educación superior. |
 | **🧠 Inteligencia y analítica** | IA, optimización y ciencia de datos aplicadas a redes, organizaciones y sistemas distribuidos. |
+
+### Perfiles científicos
+
+Consulte mi producción científica, publicaciones, citas e identificadores académicos:
+
+<p align="center">
+  <a href="https://scholar.google.com/citations?hl=es&amp;user=0VzaAykAAAAJ&amp;view_op=list_works&amp;sortby=pubdate">
+    <img src="https://img.shields.io/badge/Google_Scholar-Publicaciones-0C71B9?style=for-the-badge&amp;logo=googlescholar&amp;logoColor=white" alt="Perfil de Jairo Sacoto en Google Scholar">
+  </a>
+  <a href="https://www.scopus.com/authid/detail.uri?authorId=58070349900">
+    <img src="https://img.shields.io/badge/Scopus-Perfil_científico-0B2E67?style=for-the-badge&amp;logo=scopus&amp;logoColor=white" alt="Perfil de Jairo Sacoto en Scopus">
+  </a>
+  <a href="https://orcid.org/0000-0003-2916-0369">
+    <img src="https://img.shields.io/badge/ORCID-0000--0003--2916--0369-2DA9E8?style=for-the-badge&amp;logo=orcid&amp;logoColor=white" alt="ORCID de Jairo Sacoto">
+  </a>
+</p>
 
 > **Propósito:** transformar conocimiento científico en arquitecturas, modelos y herramientas que contribuyan al desarrollo tecnológico y social.
 
