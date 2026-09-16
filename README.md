@@ -67,6 +67,18 @@ Consulte mi producción científica, publicaciones, citas e identificadores acad
   </a>
 </p>
 
+### FOGCOMPUTING SUPPLEMENTARY AND DATA
+
+Supplementary datasets and validation materials for my Fog Computing research, including analytical-versus-iFogSim2 agreement metrics, Bland–Altman statistics, validation-gate results, revised interarrival-trace diagnostics, and scenario-family summaries.
+
+<p align="left">
+  <a href="./fog-computing-supplementary-and-data/">
+    <img src="https://img.shields.io/badge/OPEN-FOG_COMPUTING_DATA-0C71B9?style=for-the-badge&logo=github&logoColor=white" alt="Fog Computing Supplementary and Data">
+  </a>
+</p>
+
+> **Purpose:** provide transparent and reproducible supplementary material for Fog Computing simulation and analytical validation studies.
+
 > **Propósito:** transformar conocimiento científico en arquitecturas, modelos y herramientas que contribuyan al desarrollo tecnológico y social.
 
 <a id="docencia"></a>
