@@ -1,32 +1,48 @@
-# FOG COMPUTING — SUPPLEMENTARY AND DATA
+# Fog Computing — Supplementary Data and Reproducibility Package
 
-This section provides supplementary material, validation summaries, and reproducibility data associated with ongoing research on Fog Computing, queueing-aware performance analysis, network economics, and iFogSim2-based simulation.
+This directory contains the data, source code, validation summaries, and supplementary instrumentation supporting the manuscript on congestion-aware Stackelberg competition among fog service providers with iFogSim2 validation.
 
-## Available data
+## Canonical validation dataset
 
-- [`agreement_metrics.csv`](./data/agreement_metrics.csv) — agreement metrics between analytical and simulated latency results.
-- [`bland_altman_summary.csv`](./data/bland_altman_summary.csv) — Bland–Altman summary statistics for providers A and B.
-- [`failure_gate_counts_by_family.csv`](./data/failure_gate_counts_by_family.csv) — validation-gate failure counts grouped by scenario family.
-- [`replace_with_interarrival_trace_s_validation_summary.csv`](./data/replace_with_interarrival_trace_s_validation_summary.csv) — revised interarrival-trace validation statistics.
-- [`trace_validation_old_vs_new.csv`](./data/trace_validation_old_vs_new.csv) — comparison between the previous and revised trace validation results.
-- [`updated_results_summary.csv`](./data/updated_results_summary.csv) — global validation summary for the 218 simulation rows.
-- [`updated_summary_by_family.csv`](./data/updated_summary_by_family.csv) — observed and projected validation results grouped by scenario family.
+- [`data/ifogsim_218_with_observed_and_projected_validation.csv`](./data/ifogsim_218_with_observed_and_projected_validation.csv) — canonical 218-row dataset containing the analytical variables, iFogSim2 measurements, validation metrics, observed strict-validation flag, and the explicitly identified counterfactual projected trace-gate flag.
+- [`data/ifogsim_218_matlab_view.csv`](./data/ifogsim_218_matlab_view.csv) — reduced 218-row view used for analysis and plotting.
+- [`data/ifogsim_218_validation_failures.csv`](./data/ifogsim_218_validation_failures.csv) — subset of rows that do not satisfy the observed strict criterion.
 
-## Supplementary Instrumentation for p95/p99
+The observed iFogSim2 validation and the revised-trace counterfactual analysis are intentionally kept separate. `observedValidationPass` corresponds to observed simulation output; `projectedValidationPassAfterRevisedTraceGate` is a diagnostic projection and is not presented as a new iFogSim2 run.
 
-- [`TailLatencyRecorder.java`](./instrumentation/TailLatencyRecorder.java) — dependency-free tuple-level end-to-end latency recorder for providers A and B.
+## Validation summaries and diagnostics
 
-This supplementary instrumentation stores latency samples per provider, computes the mean, p95 and p99 using R-7 / NumPy-like linear interpolation, tracks SLA violations, and exports both a summary CSV and a raw tuple-level latency CSV. It is intended to support tail-latency analysis and reproducibility of p95/p99 measurements in the iFogSim2 validation workflow.
+- [`data/updated_results_summary.csv`](./data/updated_results_summary.csv) — global validation summary.
+- [`data/updated_summary_by_family.csv`](./data/updated_summary_by_family.csv) — validation results grouped by scenario family.
+- [`data/agreement_metrics.csv`](./data/agreement_metrics.csv) — agreement metrics between analytical and simulated latency.
+- [`data/bland_altman_summary.csv`](./data/bland_altman_summary.csv) — Bland–Altman summary statistics.
+- [`data/failure_gate_counts_by_family.csv`](./data/failure_gate_counts_by_family.csv) — strict-gate failure counts by family.
+- [`data/replace_with_interarrival_trace_s_validation_summary.csv`](./data/replace_with_interarrival_trace_s_validation_summary.csv) — revised synthetic-trace validation summary.
+- [`data/trace_validation_old_vs_new.csv`](./data/trace_validation_old_vs_new.csv) — comparison of the previous and revised trace diagnostics.
 
-## Research context
+## Reproducibility code
 
-The validation workflow compares analytical queueing models with discrete-event simulation results from iFogSim2. The simulation implementation uses FCFS provider-level scheduling, explicit queue/service/system-time instrumentation, and separate measurements for ingress, egress, network usage, energy, SLA violations, and analytical-versus-simulated error metrics.
+- [`code/FogEconomicsIFogSim2StrictMM1V5.java`](./code/FogEconomicsIFogSim2StrictMM1V5.java) — validated iFogSim2 V5 implementation used for the controlled experiments.
+- [`code/analyze_ifogsim_218_trace_updated.m`](./code/analyze_ifogsim_218_trace_updated.m) — MATLAB post-processing and validation script. By default, it reads the canonical consolidated dataset in `data/`.
 
-The revised trace diagnostics are reported separately from the original iFogSim2 validation output so that observed simulation results and projected trace-gate effects remain distinguishable.
+## Supplementary tail-latency instrumentation
+
+- [`instrumentation/TailLatencyRecorder.java`](./instrumentation/TailLatencyRecorder.java) — tuple-level latency recorder for mean, p95, p99, SLA violations, and raw latency samples.
+
+## Minimal reproduction workflow
+
+1. Place `FogEconomicsIFogSim2StrictMM1V5.java` in the iFogSim2 package `org.fog.test.perfeval` and execute the scenario set used in the study.
+2. Use the canonical 218-row CSV in `data/` to reproduce the reported validation summaries and figure inputs.
+3. Run `code/analyze_ifogsim_218_trace_updated.m` from the repository directory (or pass explicit file paths).
+4. Use `TailLatencyRecorder.java` for future runs requiring tuple-level p95/p99 recording rather than inference from aggregate means.
+
+## Data-availability wording for the manuscript
+
+> The data and computational artifacts supporting this study are openly available in the public GitHub repository associated with the manuscript. The repository contains the consolidated 218-row iFogSim2 validation dataset, the reduced analysis dataset, the strict-validation failure subset, agreement and family-level summaries, the validated Java implementation, the MATLAB post-processing script, and supplementary tuple-level tail-latency instrumentation. The revised-trace effect is reported separately as a counterfactual diagnostic and is supported by the corresponding validation-summary files.
 
 ## Citation and reuse
 
-These files are intended to support transparency and reproducibility of the associated Fog Computing research. When reusing the data, please cite the corresponding publication once its bibliographic information is available.
+These materials are provided to support transparency and computational reproducibility of the associated study. When reusing them, please cite the final published article once bibliographic information is available.
 
 ---
 
