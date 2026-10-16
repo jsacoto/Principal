@@ -13,6 +13,7 @@
   <a href="#perfil">Perfil</a> ·
   <a href="#investigacion">Investigación</a> ·
   <a href="#docencia">Docencia</a> ·
+  <a href="#observatorio-td">Observatorio TD</a> ·
   <a href="#divulgacion">Tech Talk</a>
 </p>
 
@@ -107,6 +108,20 @@ Promuevo un aprendizaje práctico, reproducible y orientado a proyectos. Las sig
 </table>
 
 > 🚧 Las páginas académicas están en construcción y se actualizarán conforme se incorporen nuevos recursos.
+
+<a id="observatorio-td"></a>
+
+## Observatorio de Transformación Digital UPS
+
+Plataforma full-stack dockerizada para la **gobernanza, trazabilidad y medición continua de la madurez digital de la Universidad Politécnica Salesiana**, integrando iniciativas, dimensiones D1–D5, objetivos O1–O5, OKRs, KPIs, evidencias y los índices IGMD, IOC, IKO e IGTD.
+
+<p align="left">
+  <a href="./observatorio-transformacion-digital-ups/">
+    <img src="https://img.shields.io/badge/ABRIR-OBSERVATORIO_TD_UPS-0C71B9?style=for-the-badge&logo=docker&logoColor=white" alt="Observatorio de Transformación Digital UPS">
+  </a>
+</p>
+
+**Stack:** Next.js · FastAPI · PostgreSQL · Docker Compose · Nginx. Incluye entorno de desarrollo/pruebas para macOS y despliegue dockerizado para servidor.
 
 <a id="divulgacion"></a>
 

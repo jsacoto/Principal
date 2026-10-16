@@ -1,0 +1,84 @@
+name: ups-digital-observatory-mac
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ups_observatory}
+      POSTGRES_USER: ${POSTGRES_USER:-ups}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ups-local-dev}
+    volumes:
+      - postgres_mac_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ups} -d ${POSTGRES_DB:-ups_observatory}"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    networks: [observatory]
+
+  api:
+    build:
+      context: ./apps/api
+      target: development
+    environment:
+      APP_ENV: development
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ups}:${POSTGRES_PASSWORD:-ups-local-dev}@postgres:5432/${POSTGRES_DB:-ups_observatory}
+      LAMBDA_IGMD: ${LAMBDA_IGMD:-0.50}
+      LAMBDA_IOC: ${LAMBDA_IOC:-0.30}
+      LAMBDA_IKO: ${LAMBDA_IKO:-0.20}
+      DIMENSION_WEIGHTS: ${DIMENSION_WEIGHTS:-0.20,0.20,0.20,0.20,0.20}
+      OBJECTIVE_WEIGHTS: ${OBJECTIVE_WEIGHTS:-0.20,0.20,0.20,0.20,0.20}
+      NOTION_API_TOKEN: ${NOTION_API_TOKEN:-}
+      NOTION_ROOT_PAGE_ID: ${NOTION_ROOT_PAGE_ID:-175b0841d99482f0a2a881a9c73be108}
+      CORS_ORIGINS: http://localhost:${WEB_PORT:-3000},http://127.0.0.1:${WEB_PORT:-3000}
+    volumes:
+      - ./apps/api/app:/app/app
+      - ./apps/api/tests:/app/tests
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    networks: [observatory]
+
+  web:
+    build:
+      context: ./apps/web
+      target: development
+    environment:
+      API_INTERNAL_URL: http://api:8000
+      NEXT_TELEMETRY_DISABLED: "1"
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - ./apps/web:/app
+      - web_node_modules:/app/node_modules
+      - web_next_cache:/app/.next
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
+    networks: [observatory]
+
+volumes:
+  postgres_mac_data:
+  web_node_modules:
+  web_next_cache:
+
+networks:
+  observatory:
+    driver: bridge

@@ -1,0 +1,99 @@
+name: ups-digital-observatory-test
+
+services:
+  postgres-test:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ups_observatory_test
+      POSTGRES_USER: ups_test
+      POSTGRES_PASSWORD: ups_test
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ups_test -d ups_observatory_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    networks: [testnet]
+
+  api-tests:
+    build:
+      context: ./apps/api
+      target: test
+    environment:
+      APP_ENV: test
+      DATABASE_URL: postgresql+psycopg://ups_test:ups_test@postgres-test:5432/ups_observatory_test
+      CORS_ORIGINS: http://web-smoke:3000
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+    command: ["pytest", "-q"]
+    networks: [testnet]
+
+  web-tests:
+    build:
+      context: ./apps/web
+      target: test
+      args:
+        API_INTERNAL_URL: http://api-smoke:8000
+    command: ["node", "-e", "console.log('Next.js typecheck + production build: OK')"]
+    networks: [testnet]
+
+  api-smoke:
+    build:
+      context: ./apps/api
+      target: production
+    environment:
+      APP_ENV: test
+      DATABASE_URL: postgresql+psycopg://ups_test:ups_test@postgres-test:5432/ups_observatory_test
+      CORS_ORIGINS: http://web-smoke:3000
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    networks: [testnet]
+
+  web-smoke:
+    build:
+      context: ./apps/web
+      target: production
+      args:
+        API_INTERNAL_URL: http://api-smoke:8000
+    environment:
+      API_INTERNAL_URL: http://api-smoke:8000
+    depends_on:
+      api-smoke:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+      start_period: 15s
+    networks: [testnet]
+
+  smoke:
+    image: curlimages/curl:8.12.1
+    depends_on:
+      api-smoke:
+        condition: service_healthy
+      web-smoke:
+        condition: service_healthy
+    command:
+      - sh
+      - -ec
+      - |
+        curl -fsS http://api-smoke:8000/health/ready
+        curl -fsS http://api-smoke:8000/api/observatory/summary?scope=all >/dev/null
+        curl -fsS http://web-smoke:3000 >/dev/null
+        echo "Full-stack smoke test: OK"
+    networks: [testnet]
+
+networks:
+  testnet:
+    driver: bridge

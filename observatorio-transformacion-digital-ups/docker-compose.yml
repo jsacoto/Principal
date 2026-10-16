@@ -1,0 +1,83 @@
+name: ups-digital-observatory
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ups_observatory}
+      POSTGRES_USER: ${POSTGRES_USER:-ups}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-local-only}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ups} -d ${POSTGRES_DB:-ups_observatory}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+    networks: [observatory]
+
+  api:
+    build:
+      context: ./apps/api
+      target: production
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ups}:${POSTGRES_PASSWORD:-change-me-local-only}@postgres:5432/${POSTGRES_DB:-ups_observatory}
+      LAMBDA_IGMD: ${LAMBDA_IGMD:-0.50}
+      LAMBDA_IOC: ${LAMBDA_IOC:-0.30}
+      LAMBDA_IKO: ${LAMBDA_IKO:-0.20}
+      DIMENSION_WEIGHTS: ${DIMENSION_WEIGHTS:-0.20,0.20,0.20,0.20,0.20}
+      OBJECTIVE_WEIGHTS: ${OBJECTIVE_WEIGHTS:-0.20,0.20,0.20,0.20,0.20}
+      NOTION_API_TOKEN: ${NOTION_API_TOKEN:-}
+      NOTION_ROOT_PAGE_ID: ${NOTION_ROOT_PAGE_ID:-175b0841d99482f0a2a881a9c73be108}
+      CORS_ORIGINS: http://localhost:${WEB_PORT:-3000},http://127.0.0.1:${WEB_PORT:-3000}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks: [observatory]
+
+  web:
+    build:
+      context: ./apps/web
+      target: production
+      args:
+        API_INTERNAL_URL: http://api:8000
+    environment:
+      API_INTERNAL_URL: http://api:8000
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks: [observatory]
+
+volumes:
+  postgres_data:
+
+networks:
+  observatory:
+    driver: bridge

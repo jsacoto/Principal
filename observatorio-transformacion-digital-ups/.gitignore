@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+!.env.mac.example
+!.env.server.example
+!.env.test.example
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.db
+node_modules/
+.next/
+.DS_Store
+coverage/
+*.log
+backup.sql

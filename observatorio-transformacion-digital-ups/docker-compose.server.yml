@@ -1,0 +1,114 @@
+name: ups-digital-observatory-prod
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ups_observatory}
+      POSTGRES_USER: ${POSTGRES_USER:-ups}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ups} -d ${POSTGRES_DB:-ups_observatory}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+    networks: [backend]
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  api:
+    build:
+      context: ./apps/api
+      target: production
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ups}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-ups_observatory}
+      LAMBDA_IGMD: ${LAMBDA_IGMD:-0.50}
+      LAMBDA_IOC: ${LAMBDA_IOC:-0.30}
+      LAMBDA_IKO: ${LAMBDA_IKO:-0.20}
+      DIMENSION_WEIGHTS: ${DIMENSION_WEIGHTS:-0.20,0.20,0.20,0.20,0.20}
+      OBJECTIVE_WEIGHTS: ${OBJECTIVE_WEIGHTS:-0.20,0.20,0.20,0.20,0.20}
+      NOTION_API_TOKEN: ${NOTION_API_TOKEN:-}
+      NOTION_ROOT_PAGE_ID: ${NOTION_ROOT_PAGE_ID:-175b0841d99482f0a2a881a9c73be108}
+      CORS_ORIGINS: ${PUBLIC_ORIGIN:?Set PUBLIC_ORIGIN in .env}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks: [backend]
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  web:
+    build:
+      context: ./apps/web
+      target: production
+      args:
+        API_INTERNAL_URL: http://api:8000
+    environment:
+      API_INTERNAL_URL: http://api:8000
+      NEXT_TELEMETRY_DISABLED: "1"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks: [backend]
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  gateway:
+    image: nginx:1.27-alpine
+    ports:
+      - "${APP_PORT:-80}:80"
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      web:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks: [backend]
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:
+    driver: bridge
