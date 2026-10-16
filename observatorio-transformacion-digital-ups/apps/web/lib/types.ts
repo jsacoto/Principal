@@ -105,3 +105,42 @@ export type QualityIssue = {
   type: string;
   message: string;
 };
+
+export type AuthUser = {
+  id: number;
+  email: string;
+  name: string;
+  role: 'admin' | 'responsible';
+  is_active: boolean;
+  initiative_codes: string[];
+};
+
+export type EvidenceUpload = {
+  id: number;
+  activity_id: number;
+  original_name: string;
+  content_type: string;
+  size_bytes: number;
+  description: string;
+  uploaded_at: string;
+  uploaded_by?: string | null;
+  download_url: string;
+};
+
+export type ManagedInitiative = Initiative & {
+  uploads?: EvidenceUpload[];
+};
+
+export type AdminUser = AuthUser & {
+  created_at: string;
+};
+
+export type InitiativeTemplate = {
+  source: string;
+  notion_template_fields: string[];
+  objectives: Array<{ code: string; legacy_code?: string | null; name: string }>;
+  dimensions: Array<{ code: string; name: string }>;
+  state_options: string[];
+  priority_options: string[];
+  contribution_levels: number[];
+};

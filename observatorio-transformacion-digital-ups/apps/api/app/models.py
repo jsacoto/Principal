@@ -1,5 +1,5 @@
 from __future__ import annotations
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 from enum import Enum
 from typing import Any
 
@@ -7,6 +7,10 @@ from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Integer, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .database import Base
+
+
+def utcnow_naive() -> datetime:
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 class Direction(str, Enum):
@@ -36,7 +40,7 @@ class Objective(Base):
     description: Mapped[str] = mapped_column(Text, default="")
     weight: Mapped[float] = mapped_column(Float, default=0.20)
 
-    key_results: Mapped[list["KeyResult"]] = relationship(back_populates="objective", cascade="all, delete-orphan")
+    key_results: Mapped[list[KeyResult]] = relationship(back_populates="objective", cascade="all, delete-orphan")
 
 
 class Initiative(Base):
@@ -59,9 +63,9 @@ class Initiative(Base):
     is_reference_16: Mapped[bool] = mapped_column(Boolean, default=False)
 
     objective: Mapped[Objective | None] = relationship()
-    leaders: Mapped[list["InitiativeLeader"]] = relationship(back_populates="initiative", cascade="all, delete-orphan")
-    activities: Mapped[list["Activity"]] = relationship(back_populates="initiative", cascade="all, delete-orphan")
-    contributions: Mapped[list["InitiativeDimension"]] = relationship(back_populates="initiative", cascade="all, delete-orphan")
+    leaders: Mapped[list[InitiativeLeader]] = relationship(back_populates="initiative", cascade="all, delete-orphan")
+    activities: Mapped[list[Activity]] = relationship(back_populates="initiative", cascade="all, delete-orphan")
+    contributions: Mapped[list[InitiativeDimension]] = relationship(back_populates="initiative", cascade="all, delete-orphan")
 
     @property
     def analytical_progress(self) -> float:
@@ -102,8 +106,8 @@ class Activity(Base):
     raw_data: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
 
     initiative: Mapped[Initiative] = relationship(back_populates="activities")
-    assignees: Mapped[list["ActivityAssignee"]] = relationship(back_populates="activity", cascade="all, delete-orphan")
-    evidence: Mapped[list["Evidence"]] = relationship(back_populates="activity", cascade="all, delete-orphan")
+    assignees: Mapped[list[ActivityAssignee]] = relationship(back_populates="activity", cascade="all, delete-orphan")
+    evidence: Mapped[list[Evidence]] = relationship(back_populates="activity", cascade="all, delete-orphan")
 
 
 class ActivityAssignee(Base):
@@ -198,7 +202,7 @@ class TraceabilityRecord(Base):
 class IndexLog(Base):
     __tablename__ = "index_logs"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    computed_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow_naive, index=True)
     igmd: Mapped[float] = mapped_column(Float)
     ioc: Mapped[float] = mapped_column(Float)
     ioc5: Mapped[float] = mapped_column(Float)
@@ -207,3 +211,80 @@ class IndexLog(Base):
     igtd: Mapped[float] = mapped_column(Float)
     details: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
     source: Mapped[str] = mapped_column(String(50), default="computed")
+
+
+class User(Base):
+    __tablename__ = "users"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(String(320), unique=True, index=True)
+    name: Mapped[str] = mapped_column(String(180))
+    password_hash: Mapped[str] = mapped_column(Text)
+    role: Mapped[str] = mapped_column(String(32), default="responsible", index=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow_naive)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow_naive, onupdate=utcnow_naive)
+
+    permissions: Mapped[list["UserInitiativePermission"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
+    sessions: Mapped[list["AuthSession"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
+
+
+class UserInitiativePermission(Base):
+    __tablename__ = "user_initiative_permissions"
+    __table_args__ = (UniqueConstraint("user_id", "initiative_id", name="uq_user_initiative_permission"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    initiative_id: Mapped[int] = mapped_column(ForeignKey("initiatives.id", ondelete="CASCADE"), index=True)
+    can_edit: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow_naive)
+
+    user: Mapped[User] = relationship(back_populates="permissions")
+    initiative: Mapped[Initiative] = relationship()
+
+
+class AuthSession(Base):
+    __tablename__ = "auth_sessions"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow_naive)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, index=True)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    user: Mapped[User] = relationship(back_populates="sessions")
+
+
+class ActivityProgressLog(Base):
+    __tablename__ = "activity_progress_logs"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    activity_id: Mapped[int] = mapped_column(ForeignKey("activities.id", ondelete="CASCADE"), index=True)
+    old_progress: Mapped[float | None] = mapped_column(Float, nullable=True)
+    new_progress: Mapped[float | None] = mapped_column(Float, nullable=True)
+    old_state: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    new_state: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    justification: Mapped[str] = mapped_column(Text)
+    changed_by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="RESTRICT"), index=True)
+    changed_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow_naive, index=True)
+
+    activity: Mapped[Activity] = relationship()
+    changed_by: Mapped[User] = relationship()
+
+
+class EvidenceUpload(Base):
+    __tablename__ = "evidence_uploads"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    activity_id: Mapped[int] = mapped_column(ForeignKey("activities.id", ondelete="CASCADE"), index=True)
+    original_name: Mapped[str] = mapped_column(String(300))
+    stored_name: Mapped[str] = mapped_column(String(120), unique=True)
+    content_type: Mapped[str] = mapped_column(String(160), default="application/octet-stream")
+    size_bytes: Mapped[int] = mapped_column(Integer)
+    description: Mapped[str] = mapped_column(Text, default="")
+    uploaded_by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="RESTRICT"), index=True)
+    uploaded_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow_naive, index=True)
+
+    activity: Mapped[Activity] = relationship()
+    uploaded_by: Mapped[User] = relationship()

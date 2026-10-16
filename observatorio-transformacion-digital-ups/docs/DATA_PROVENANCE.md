@@ -32,3 +32,9 @@ El endpoint `/api/observatory/data-quality` detecta, entre otros:
 ## Matriz de contribución
 
 El brief menciona una matriz institucional I(i,d) de niveles 0..3, pero no suministra los valores oficiales. Para que el motor sea ejecutable se incluyó una matriz **provisional y explícitamente no validada**. Debe sustituirse por la matriz aprobada por la UPS cuando esté disponible.
+
+## Datos creados en la plataforma
+
+Las iniciativas creadas desde `/gestion/nueva` no se presentan como datos procedentes de Notion. Se identifican con `data_origin=platform_created`. Sus contribuciones D1–D5 se registran con `source=platform_template` y `validated=true`, porque son declaradas explícitamente por un administrador al crear la iniciativa.
+
+Los archivos subidos desde Gestión se almacenan como `EvidenceUpload`; no sustituyen ni reescriben las evidencias históricas de Notion.

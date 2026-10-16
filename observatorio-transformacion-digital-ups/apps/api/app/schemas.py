@@ -137,3 +137,64 @@ class InitiativeVerificationRequest(BaseModel):
     progress_percent: float = Field(ge=0, le=100)
     verified_by: str = Field(min_length=2, max_length=180)
     note: str = Field(min_length=2, max_length=2000)
+
+
+class LoginRequest(BaseModel):
+    email: str = Field(min_length=5, max_length=320)
+    password: str = Field(min_length=10, max_length=200)
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str = Field(min_length=10, max_length=200)
+    new_password: str = Field(min_length=10, max_length=200)
+
+
+class ActivityUpdateRequest(BaseModel):
+    progress: float | None = Field(default=None, ge=0, le=100)
+    state: str | None = Field(default=None, max_length=60)
+    priority: str | None = Field(default=None, max_length=30)
+    start_date: date | None = None
+    end_date: date | None = None
+    observation: str | None = Field(default=None, max_length=4000)
+    justification: str = Field(min_length=3, max_length=4000)
+
+
+class AdminUserCreateRequest(BaseModel):
+    name: str = Field(min_length=2, max_length=180)
+    email: str = Field(min_length=5, max_length=320)
+    password: str = Field(min_length=10, max_length=200)
+    role: Literal["admin", "responsible"] = "responsible"
+    initiative_codes: list[str] = []
+
+
+class AdminUserUpdateRequest(BaseModel):
+    name: str | None = Field(default=None, min_length=2, max_length=180)
+    is_active: bool | None = None
+    role: Literal["admin", "responsible"] | None = None
+    initiative_codes: list[str] | None = None
+
+
+class InitiativeActivityCreate(BaseModel):
+    external_id: str = Field(min_length=1, max_length=40)
+    title: str = Field(min_length=3, max_length=2000)
+    progress: float | None = Field(default=0, ge=0, le=100)
+    state: str = Field(default="Por Iniciar", max_length=60)
+    priority: str = Field(default="Media", max_length=30)
+    start_date: date | None = None
+    end_date: date | None = None
+    observation: str = Field(default="", max_length=4000)
+    in_field: str = Field(default="", max_length=1000)
+    responsible_name: str = Field(default="", max_length=180)
+    responsible_email: str = Field(default="", max_length=320)
+
+
+class InitiativeCreateRequest(BaseModel):
+    code: str = Field(min_length=1, max_length=20, pattern=r"^[A-Za-z0-9._-]+$")
+    objective_code: Literal["O1", "O2", "O3", "O4", "O5"]
+    scope: str = Field(min_length=2, max_length=120)
+    description: str = Field(min_length=10, max_length=5000)
+    leader_name: str = Field(min_length=2, max_length=180)
+    leader_email: str = Field(default="", max_length=320)
+    status: str = Field(default="Por Iniciar", max_length=60)
+    contributions: dict[str, int]
+    activities: list[InitiativeActivityCreate] = []

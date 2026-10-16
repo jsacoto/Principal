@@ -5,6 +5,9 @@ DB = Path(__file__).parent / "test_observatory.db"
 if DB.exists():
     DB.unlink()
 os.environ["DATABASE_URL"] = f"sqlite:///{DB}"
+os.environ["INITIAL_ADMIN_EMAIL"] = "transformaciondigital@ups.edu.ec"
+os.environ["INITIAL_ADMIN_PASSWORD"] = "Test-UPS-Digital-2026!"
+os.environ["UPLOAD_DIR"] = str(Path(__file__).parent / "test_uploads")
 
 from fastapi.testclient import TestClient
 from app.main import app
@@ -20,7 +23,7 @@ def test_health_and_seeded_portfolio():
         initiatives = client.get("/api/initiatives").json()
         assert len(initiatives) == 29
         ref = client.get("/api/initiatives?scope=reference16").json()
-        assert len(ref) == 16
+        assert len(ref) == 16  # legacy operational snapshot kept for compatibility
 
 
 def test_executive_summary_and_model():
@@ -48,6 +51,8 @@ def test_initiative_detail_and_what_if():
         assert "dimension_deltas" in simulation
         grouped = client.post("/api/observatory/what-if?scope=institutional16", json={"initiative_code":"1.a","progress_percent":100}).json()
         assert grouped["simulated_progress_percent"] == 100
+        login = client.post("/api/auth/login", json={"email":"transformaciondigital@ups.edu.ec","password":"Test-UPS-Digital-2026!"})
+        assert login.status_code == 200
         verified = client.patch("/api/initiatives/1.a/verification", json={"progress_percent":91.5,"verified_by":"Comité TD","note":"Validación de prueba con evidencia."})
         assert verified.status_code == 200
         body = verified.json()

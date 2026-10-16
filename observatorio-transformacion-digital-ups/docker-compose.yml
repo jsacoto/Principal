@@ -34,6 +34,15 @@ services:
       NOTION_API_TOKEN: ${NOTION_API_TOKEN:-}
       NOTION_ROOT_PAGE_ID: ${NOTION_ROOT_PAGE_ID:-175b0841d99482f0a2a881a9c73be108}
       CORS_ORIGINS: http://localhost:${WEB_PORT:-3000},http://127.0.0.1:${WEB_PORT:-3000}
+      INITIAL_ADMIN_EMAIL: ${INITIAL_ADMIN_EMAIL:-transformaciondigital@ups.edu.ec}
+      INITIAL_ADMIN_NAME: ${INITIAL_ADMIN_NAME:-Coordinación de Transformación Digital}
+      INITIAL_ADMIN_PASSWORD: ${INITIAL_ADMIN_PASSWORD:-UPS-Digital-Local-2026!}
+      SESSION_DAYS: ${SESSION_DAYS:-7}
+      SESSION_COOKIE_SECURE: "false"
+      UPLOAD_DIR: /data/uploads
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-20}
+    volumes:
+      - uploads_data:/data/uploads
     ports:
       - "${API_PORT:-8000}:8000"
     depends_on:
@@ -77,6 +86,7 @@ services:
 
 volumes:
   postgres_data:
+  uploads_data:
 
 networks:
   observatory:

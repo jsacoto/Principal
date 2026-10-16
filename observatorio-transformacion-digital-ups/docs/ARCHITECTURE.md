@@ -1,36 +1,94 @@
-# Arquitectura
+# Arquitectura v2.0
 
-## Capas
+## 1. Portal público
 
-### Presentación
-Next.js App Router, React, TypeScript, Tailwind CSS, Recharts y Framer Motion. La UI usa superficies translúcidas, tipografía tabular para métricas, contraste adaptativo y navegación compacta.
+Next.js App Router expone cinco áreas públicas:
 
-### API y dominio
-FastAPI + Pydantic v2. Los endpoints separan:
+- `/` — dashboard ejecutivo IGTD y D1–D5;
+- `/model` — modelo de tres capas, objetivos y fórmulas;
+- `/dimensions` — descripción de D1–D5;
+- `/contact` — contacto institucional;
+- `/login` — acceso autorizado.
 
-- `/api/observatory/*`: índices, brechas, simulación y calidad del dato.
-- `/api/initiatives/*`: portafolio y trazabilidad actividad-responsable-evidencia.
-- `/api/model/*`: dimensiones, objetivos, KRs y KPIs.
+La página principal consume únicamente endpoints analíticos de lectura.
 
-### Persistencia
-PostgreSQL en Docker/servidor. SQLAlchemy 2 modela dimensiones, objetivos, iniciativas, actividades, responsables, evidencias, contribuciones I(i,d), KRs, KPIs, trazabilidad e historial de índices.
+## 2. Espacio autorizado
 
-## Flujo analítico
+Rutas de interfaz:
 
-1. Se toma Eᵢ desde `verified_progress` cuando existe; de lo contrario, `reported_progress`.
-2. Se aplica la matriz `InitiativeDimension` para C_d y M_d.
-3. Los KRs se normalizan y agregan por objetivo para IOC.
-4. Los KPIs se normalizan para IKO.
-5. IGTD combina IGMD, IOC(5) e IKO(5) con λ=(0.50, 0.30, 0.20).
-6. El módulo de brechas prioriza contribuciones 2/3 sobre dimensiones M_d<3 y KRs<0.60.
-7. What-If reemplaza temporalmente un Eᵢ y recalcula sin escribir en DB.
-8. La verificación manual de avance persiste `verified_progress`, responsable, fecha y nota; ese Eᵢ prevalece sobre el avance reportado.
-9. `TraceabilityRecord` mantiene aristas genéricas entre iniciativa, actividad, dimensión, objetivo, KR, KPI y evidencia. Los enlaces KPI→evidencia solo deben crearse cuando exista una definición institucional explícita; el seed no los inventa.
+- `/gestion` — cartera asignada, actualización de actividades, justificaciones y evidencias;
+- `/gestion/nueva` — alta de nuevas iniciativas (administrador);
+- `/gestion/usuarios` — usuarios y permisos (administrador).
 
-## Dos alcances del portafolio
+FastAPI implementa sesiones persistidas en PostgreSQL. El navegador recibe una cookie HTTP-only; la base de datos guarda únicamente el hash SHA-256 del token de sesión.
 
-- `institutional16`: portafolio conceptual de **16 iniciativas numeradas 1–16**. Los tracks 1.a/1.b, 3.a/3.b y 8.a/8.b se agregan por número institucional mediante media simple del avance disponible y máximo nivel de contribución por dimensión, evitando duplicar el denominador de la matriz I(i,d).
-- `all`: portafolio operativo ampliado de **29 páginas de iniciativa** de Notion, hasta la Iniciativa 26.
-- `reference16`: alias de compatibilidad para el cálculo agregado de 16 iniciativas.
+### Roles
 
-La UI principal alterna `all` e `institutional16`. El Data Explorer conserva las 29 páginas operativas para trazabilidad completa.
+- `admin`: toda la cartera y administración.
+- `responsible`: solo iniciativas vinculadas en `user_initiative_permissions`.
+
+## 3. Trazabilidad de cambios
+
+Una edición autorizada de actividad produce:
+
+```text
+Usuario autenticado
+      │
+      ▼
+Permiso de iniciativa
+      │
+      ▼
+PATCH actividad + justificación
+      │
+      ├── activity_progress_logs
+      ├── recálculo de avance de iniciativa
+      └── actualización de IGMD/IGTD en la siguiente lectura
+```
+
+La carga de evidencia genera `evidence_uploads` y una arista `TraceabilityRecord` actividad→evidencia.
+
+## 4. Evidencias
+
+Los archivos se guardan en `/data/uploads` con nombre físico UUID y metadatos en PostgreSQL. Docker monta esa ruta en:
+
+- `uploads_mac_data` en Mac;
+- `uploads_data` en local production-like y servidor.
+
+La descarga exige sesión válida y permiso sobre la iniciativa.
+
+## 5. Motor analítico
+
+1. Se toma `verified_progress` cuando existe; en otro caso `reported_progress`.
+2. La matriz `InitiativeDimension` produce cobertura `C_d` y madurez `M_d`.
+3. KRs → IOC.
+4. KPIs → IKO.
+5. `IGTD = 0.50·IGMD + 0.30·IOC(5) + 0.20·IKO(5)` por defecto.
+6. What-If recalcula sin persistir.
+7. La vista `institutional16` mantiene las 16 iniciativas conceptuales históricas; las iniciativas nuevas entran al portafolio operativo `all`.
+
+## 6. Persistencia
+
+SQLAlchemy 2 / PostgreSQL 16 modela:
+
+- dimensiones, objetivos, iniciativas, líderes, actividades y responsables;
+- evidencias Notion y evidencias subidas a la plataforma;
+- contribuciones I(i,d), KRs, KPIs, trazabilidad e historial de índices;
+- usuarios, permisos, sesiones y auditoría de avances.
+
+## 7. Despliegue
+
+```text
+Internet / TLS institucional
+          │
+          ▼
+      Nginx gateway
+       ┌────┴────┐
+       ▼         ▼
+    Next.js    FastAPI
+                 │
+        ┌────────┴────────┐
+        ▼                 ▼
+   PostgreSQL       uploads_data
+```
+
+Nginx es el único servicio publicado en producción.

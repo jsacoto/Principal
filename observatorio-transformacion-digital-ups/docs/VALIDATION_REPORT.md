@@ -1,25 +1,46 @@
-# Validation report — Docker environment v1.1.0
+# Validation report — Portal público + gestión autorizada v2.0
 
-Validation performed in the build workspace on 2026-10-16.
+Validación realizada en el workspace de construcción el 2026-10-16.
 
-## Completed successfully
+## Backend
 
-- Python compile check for the FastAPI application.
-- Backend test suite: **8/8 passed**.
-- Seed integrity: **29 initiatives**, **336 activity/phase rows**, **16 institutional groups**.
-- API smoke run with SQLite fallback:
-  - `GET /health/ready` → ready/database ok.
-  - `GET /api/observatory/summary?scope=all` → returns IGTD and portfolio counts.
-- YAML parsing of:
-  - `docker-compose.yml`
-  - `docker-compose.mac.yml`
-  - `docker-compose.test.yml`
-  - `docker-compose.server.yml`
-- `bash -n` syntax validation for every shell script.
-- TypeScript/TSX syntax transpilation: **16 source files parsed successfully**.
+- Python compile check: OK.
+- Suite: **11/11 tests passed**.
+- Seed: **29 iniciativas**, **336 filas de actividad/fase**, **16 grupos institucionales**.
+- Motor IGMD/IOC/IKO/IGTD: cubierto por tests previos.
+- Login administrativo: cubierto.
+- Alta de usuario responsable: cubierto.
+- Permisos por iniciativa: cubiertos.
+- Bloqueo de iniciativa no autorizada: cubierto (HTTP 403).
+- Actualización de actividad con justificación: cubierta.
+- Auditoría de cambio: cubierta.
+- Carga de archivo de evidencia: cubierta.
+- Descarga autorizada de evidencia: cubierta.
+- Plantilla de nueva iniciativa: cubierta.
+- Creación de nueva iniciativa alineada O1–O5 / D1–D5: cubierta.
 
-## Environment limitation
+## Frontend
 
-Docker Engine is not installed in the build workspace, so actual container startup could not be executed here. The Mac test environment is designed to close that gap with `./scripts/test-mac.sh`, which builds the API and Web images, runs the backend against ephemeral PostgreSQL, performs the Next.js typecheck/build, and finishes with a full-stack smoke test.
+- Parse/transpilación sintáctica de **28 archivos TypeScript/TSX**: OK con TypeScript 5.8 disponible en el workspace.
+- Se añadieron las rutas públicas `/`, `/model`, `/dimensions`, `/contact`, `/login` y las rutas autorizadas `/gestion`, `/gestion/nueva`, `/gestion/usuarios`.
 
-An attempted direct `npm install` in the build workspace timed out because external package access is restricted; dependency resolution is therefore intentionally delegated to Docker Desktop / Docker Engine in the target environment.
+## Docker/Compose
+
+Se valida sintaxis YAML de:
+
+- `docker-compose.yml`
+- `docker-compose.mac.yml`
+- `docker-compose.test.yml`
+- `docker-compose.server.yml`
+
+Los manifiestos incorporan volumen persistente de evidencias y variables de autenticación.
+
+## Limitación del workspace
+
+Docker Engine no está instalado en este entorno de construcción; por ello no es posible arrancar físicamente los contenedores aquí. El cierre de validación en la Mac se realiza con:
+
+```bash
+./scripts/test-mac.sh
+```
+
+Ese flujo construye imágenes reales, ejecuta PostgreSQL efímero, los tests backend, `next build` y el smoke test de páginas públicas.

@@ -121,7 +121,7 @@ Plataforma full-stack dockerizada para la **gobernanza, trazabilidad y medición
   </a>
 </p>
 
-**Stack:** Next.js · FastAPI · PostgreSQL · Docker Compose · Nginx. Incluye entorno de desarrollo/pruebas para macOS y despliegue dockerizado para servidor.
+**Stack:** Next.js · FastAPI · PostgreSQL · Docker Compose · Nginx. Incluye un portal público con dashboard, modelo, dimensiones y contacto, más un espacio de **gestión autorizada** para responsables de iniciativas, con actualización de avances, justificaciones, evidencias, auditoría y creación de nuevas iniciativas alineadas a D1–D5/O1–O5. Incluye entorno de desarrollo/pruebas para macOS y despliegue dockerizado para servidor.
 
 <a id="divulgacion"></a>
 

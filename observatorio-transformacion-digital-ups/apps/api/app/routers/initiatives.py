@@ -5,8 +5,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
 from ..database import get_db
-from ..models import Activity, Initiative, InitiativeDimension
+from ..models import Activity, ActivityAssignee, Initiative, InitiativeDimension, InitiativeLeader
 from ..schemas import ActivityOut, InitiativeOut, InitiativeVerificationRequest, LeaderOut
+from ..services.auth import ensure_initiative_access, get_current_user
 
 router = APIRouter(prefix="/api/initiatives", tags=["initiatives"])
 
@@ -77,7 +78,13 @@ def get_initiative(code: str, db: Session = Depends(get_db)):
 
 
 @router.patch("/{code}/verification", response_model=InitiativeOut)
-def verify_initiative_progress(code: str, payload: InitiativeVerificationRequest, db: Session = Depends(get_db)):
+def verify_initiative_progress(
+    code: str,
+    payload: InitiativeVerificationRequest,
+    user = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    ensure_initiative_access(user, code)
     initiative = db.scalar(base_stmt().where(Initiative.code == code))
     if not initiative:
         raise HTTPException(status_code=404, detail="Initiative not found")

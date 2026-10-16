@@ -24,6 +24,10 @@ services:
       APP_ENV: test
       DATABASE_URL: postgresql+psycopg://ups_test:ups_test@postgres-test:5432/ups_observatory_test
       CORS_ORIGINS: http://web-smoke:3000
+      INITIAL_ADMIN_EMAIL: transformaciondigital@ups.edu.ec
+      INITIAL_ADMIN_PASSWORD: Test-UPS-Digital-2026!
+      SESSION_COOKIE_SECURE: "false"
+      UPLOAD_DIR: /tmp/uploads
     depends_on:
       postgres-test:
         condition: service_healthy
@@ -47,6 +51,10 @@ services:
       APP_ENV: test
       DATABASE_URL: postgresql+psycopg://ups_test:ups_test@postgres-test:5432/ups_observatory_test
       CORS_ORIGINS: http://web-smoke:3000
+      INITIAL_ADMIN_EMAIL: transformaciondigital@ups.edu.ec
+      INITIAL_ADMIN_PASSWORD: Test-UPS-Digital-2026!
+      SESSION_COOKIE_SECURE: "false"
+      UPLOAD_DIR: /tmp/uploads
     depends_on:
       postgres-test:
         condition: service_healthy
@@ -89,9 +97,12 @@ services:
       - -ec
       - |
         curl -fsS http://api-smoke:8000/health/ready
-        curl -fsS http://api-smoke:8000/api/observatory/summary?scope=all >/dev/null
+        curl -fsS 'http://api-smoke:8000/api/observatory/summary?scope=all' >/dev/null
         curl -fsS http://web-smoke:3000 >/dev/null
-        echo "Full-stack smoke test: OK"
+        curl -fsS http://web-smoke:3000/model >/dev/null
+        curl -fsS http://web-smoke:3000/dimensions >/dev/null
+        curl -fsS http://web-smoke:3000/contact >/dev/null
+        echo "Full-stack public smoke test: OK"
     networks: [testnet]
 
 networks:

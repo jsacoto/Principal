@@ -1,2 +1,2 @@
-import { ModelExplorer } from '@/components/ModelExplorer';
-export default function Page(){return <ModelExplorer/>;}
+import { TransformationModelPage } from '@/components/TransformationModelPage';
+export default function Page() { return <TransformationModelPage />; }

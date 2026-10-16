@@ -2,27 +2,40 @@
 
 ## Requisitos
 
-- macOS 13 o superior recomendado.
-- Docker Desktop 4.x o superior con Docker Compose v2.
-- 8 GB de RAM como mínimo; 12–16 GB recomendados para compilación fluida de Next.js.
-- `curl`, incluido por defecto en macOS.
+- macOS 13+ recomendado.
+- Docker Desktop con Docker Compose v2.
+- 8 GB RAM mínimo; 12–16 GB recomendados.
+- `curl`.
 
-No se fija `platform: linux/amd64`; todas las imágenes seleccionadas son multi-arquitectura y pueden ejecutarse de forma nativa en Mac Intel y Apple Silicon.
+Las imágenes elegidas son multi-arquitectura y no fijan `linux/amd64`, por lo que funcionan en Mac Intel y Apple Silicon.
 
-## Comprobación
-
-```bash
-./scripts/check-mac.sh
-```
-
-## Desarrollo
+## Arranque de desarrollo
 
 ```bash
 cp .env.mac.example .env
 ./scripts/start-mac.sh
 ```
 
-El entorno monta el código fuente dentro de los contenedores para hot reload. Los módulos Node y la caché `.next` se guardan en volúmenes Docker separados para evitar problemas entre el sistema de archivos macOS y Linux.
+Servicios:
+
+- Portal: `http://localhost:3000`
+- API: `http://localhost:8000`
+- Swagger: `http://localhost:8000/docs`
+
+Cuenta local inicial:
+
+```text
+transformaciondigital@ups.edu.ec
+```
+
+La contraseña se obtiene de `INITIAL_ADMIN_PASSWORD` en `.env`.
+
+## Persistencia local
+
+- PostgreSQL: `postgres_mac_data`.
+- Evidencias: `uploads_mac_data`.
+
+`./scripts/reset-mac.sh` elimina el entorno local y sus volúmenes, por lo que también borra las evidencias cargadas solo en esa instancia de prueba.
 
 ## Pruebas reproducibles
 
@@ -32,11 +45,11 @@ El entorno monta el código fuente dentro de los contenedores para hot reload. L
 
 ### Etapa A — API
 
-Construye el target `test` de FastAPI y ejecuta `pytest` contra PostgreSQL 16 efímero.
+Construye el target `test` de FastAPI y ejecuta `pytest` contra PostgreSQL 16 efímero. La suite v2.0 cubre 11 pruebas, incluyendo autenticación, permisos, auditoría, archivos y nueva iniciativa.
 
 ### Etapa B — Frontend
 
-Construye el target `test` de Next.js. Durante el build se ejecutan:
+Construye el target `test` de Next.js. Durante la imagen se ejecutan:
 
 ```bash
 npm run typecheck
@@ -45,16 +58,23 @@ npm run build
 
 ### Etapa C — Smoke test
 
-Arranca imágenes equivalentes a producción y verifica:
+Arranca imágenes equivalentes a producción y comprueba:
 
-- `/health/ready` de FastAPI;
+- `/health/ready`;
 - `/api/observatory/summary?scope=all`;
-- respuesta HTTP del frontend.
+- `/`;
+- `/model`;
+- `/dimensions`;
+- `/contact`.
 
-## Reiniciar datos locales
+## Prueba manual recomendada
 
-```bash
-./scripts/reset-mac.sh
-```
-
-Este comando elimina el volumen local de PostgreSQL del entorno Mac; no toca datos externos ni Notion.
+1. Abra `http://localhost:3000` y confirme el dashboard público.
+2. Revise Modelo TD, Dimensiones y Contacto.
+3. Ingrese por Acceso autorizado.
+4. Cree un usuario responsable desde Gestión → Usuarios.
+5. Asigne una iniciativa.
+6. Inicie sesión con esa cuenta.
+7. Modifique una actividad con justificación.
+8. Cargue un archivo `.pdf` o `.txt`.
+9. Revise el Historial de la iniciativa.

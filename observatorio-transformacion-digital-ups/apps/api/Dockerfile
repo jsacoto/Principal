@@ -5,7 +5,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1
 WORKDIR /app
-RUN groupadd --system app && useradd --system --gid app --create-home app
+RUN groupadd --system app \
+    && useradd --system --gid app --create-home app \
+    && mkdir -p /data/uploads \
+    && chown -R app:app /data
 COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
