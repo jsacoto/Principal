@@ -278,3 +278,8 @@ Para producción institucional se recomienda además TLS administrado por la UPS
 ## Repositorio
 
 `https://github.com/jsacoto/Principal/tree/main/observatorio-transformacion-digital-ups`
+
+
+## Manual de usuario
+
+**Manual de usuario:** [Manual_Usuario_Observatorio_Transformacion_Digital_UPS_v3.1.docx](./docs/Manual_Usuario_Observatorio_Transformacion_Digital_UPS_v3.1.docx)
