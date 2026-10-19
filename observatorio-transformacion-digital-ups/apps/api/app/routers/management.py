@@ -27,7 +27,7 @@ from ..routers.initiatives import base_stmt, serialize
 from ..schemas import ActivityUpdateRequest
 from ..services.auth import ensure_initiative_access, get_current_user, permitted_initiative_codes
 
-router = APIRouter(prefix="/api/management", tags=["management"])
+router = APIRouter(prefix="/management", tags=["management"])
 
 
 def _utcnow() -> datetime:
@@ -67,7 +67,7 @@ def _evidence_dict(row: EvidenceUpload) -> dict:
         "description": row.description,
         "uploaded_at": row.uploaded_at,
         "uploaded_by": row.uploaded_by.name if row.uploaded_by else None,
-        "download_url": f"/backend/api/management/evidence/{row.id}/download",
+        "download_url": f"/backend/api/v1/management/evidence/{row.id}/download",
     }
 
 

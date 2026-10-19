@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.1.0 - API Governance, SwaggerHub & Forecast Baseline
+
+- Contrato REST canonico versionado bajo `/api/v1` con compatibilidad legacy oculta del OpenAPI.
+- Frontend migrado a `/backend/api/v1`.
+- Seguridad de sesion declarada como esquema `APIKeyCookie` en OpenAPI.
+- Diccionario ejecutable `GET /api/v1/catalog` y documentacion `docs/API_DICTIONARY.md`.
+- Exportacion reproducible de `openapi/openapi.json`.
+- Workflow GitHub Actions para crear/actualizar el contrato en SwaggerHub Catalog.
+- ReDoc habilitado ademas de Swagger UI.
+- Escenario determinista `GET /api/v1/forecast/schedule` para proyectar IGMD/IGTD si se cumple el cronograma registrado.
+- Hoja de ruta de IA/LLM con arquitectura hibrida y requisitos de datos historicos.
+- Correccion de actualizacion de fecha en cambio de contrasena.
+- Suite backend ampliada a 15 pruebas.
+
 ## 2.0.0 — Portal público + gestión autorizada
 
 - Nueva navegación pública: Inicio, Modelo TD, Dimensiones, Contacto y Acceso autorizado.

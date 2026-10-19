@@ -2,15 +2,16 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
 from ..database import get_db
-from ..models import AuthSession, User, UserInitiativePermission
+from ..models import AuthSession, User, UserInitiativePermission, utcnow_naive
 from ..schemas import ChangePasswordRequest, LoginRequest
 from ..services.auth import (
     COOKIE_NAME,
+    SESSION_COOKIE,
     clear_session_cookie,
     create_session,
     get_current_user,
@@ -20,7 +21,7 @@ from ..services.auth import (
     verify_password,
 )
 
-router = APIRouter(prefix="/api/auth", tags=["authentication"])
+router = APIRouter(prefix="/auth", tags=["authentication"])
 
 
 def user_payload(user: User) -> dict:
@@ -59,7 +60,7 @@ def me(user: User = Depends(get_current_user)):
 def logout(
     response: Response,
     db: Session = Depends(get_db),
-    token: str | None = Cookie(default=None, alias=COOKIE_NAME),
+    token: str | None = Depends(SESSION_COOKIE),
 ):
     revoke_session_from_cookie(db, token)
     clear_session_cookie(response)
@@ -77,7 +78,7 @@ def change_password(
     if payload.current_password == payload.new_password:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La nueva contraseña debe ser diferente")
     user.password_hash = hash_password(payload.new_password)
-    user.updated_at = _utcnow()
+    user.updated_at = utcnow_naive()
     db.add(user)
     db.commit()
     return {"ok": True}

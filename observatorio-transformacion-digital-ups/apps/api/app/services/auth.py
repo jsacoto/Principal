@@ -7,7 +7,8 @@ import os
 import secrets
 from datetime import UTC, datetime, timedelta
 
-from fastapi import Cookie, Depends, HTTPException, Request, Response, status
+from fastapi import Depends, HTTPException, Request, Response, status
+from fastapi.security import APIKeyCookie
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
@@ -16,6 +17,7 @@ from ..database import get_db
 from ..models import AuthSession, User, UserInitiativePermission
 
 COOKIE_NAME = "ups_td_session"
+SESSION_COOKIE = APIKeyCookie(name=COOKIE_NAME, scheme_name="UPSObservatorySession", auto_error=False)
 PASSWORD_SCHEME = "pbkdf2_sha256"
 PASSWORD_ITERATIONS = 310_000
 
@@ -107,7 +109,7 @@ def _session_query(token: str):
 
 def get_current_user(
     db: Session = Depends(get_db),
-    ups_td_session: str | None = Cookie(default=None, alias=COOKIE_NAME),
+    ups_td_session: str | None = Depends(SESSION_COOKIE),
 ) -> User:
     if not ups_td_session:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
@@ -122,7 +124,7 @@ def get_current_user(
 
 def get_optional_user(
     db: Session = Depends(get_db),
-    ups_td_session: str | None = Cookie(default=None, alias=COOKIE_NAME),
+    ups_td_session: str | None = Depends(SESSION_COOKIE),
 ) -> User | None:
     if not ups_td_session:
         return None

@@ -144,3 +144,41 @@ export type InitiativeTemplate = {
   priority_options: string[];
   contribution_levels: number[];
 };
+
+
+export type ScheduleForecast = {
+  model: string;
+  generated_on: string;
+  target_date: string;
+  scope: string;
+  assumption: string;
+  current: { igmd: number; igtd: number; dimensions: Record<string, number> };
+  projected: { igmd: number; igtd: number; dimensions: Record<string, number> };
+  delta: { igmd: number; igtd: number; dimensions: Record<string, number> };
+  schedule_coverage: { scheduled_activities: number; total_activities: number; ratio: number };
+  initiatives: Array<{ code: string; current_progress: number; projected_progress: number; scheduled_activities: number; total_activities: number }>;
+  limitations: string[];
+};
+
+export type ApiCatalogEntry = {
+  method: string;
+  path: string;
+  summary: string;
+  tags: string[];
+  authentication: 'public' | 'session-cookie';
+  frontend_function?: string | null;
+  database_entities: string[];
+  operation_id?: string | null;
+};
+
+export type ApiCatalog = {
+  name: string;
+  api_version: string;
+  contract_version: string;
+  openapi: string;
+  swagger_ui: string;
+  redoc: string;
+  swaggerhub_catalog: string;
+  endpoint_count: number;
+  endpoints: ApiCatalogEntry[];
+};

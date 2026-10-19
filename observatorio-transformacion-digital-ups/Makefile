@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: help mac-up mac-down mac-logs mac-test local-up local-down server-up server-down verify reset-mac
+.PHONY: help mac-up mac-down mac-logs mac-test local-up local-down server-up server-down verify reset-mac api-contract
 
 help:
 	@echo "UPS Digital Maturity Observatory"
@@ -11,6 +11,7 @@ help:
 	@echo "  make local-up    Stack local production-like"
 	@echo "  make server-up   Stack de producción detrás de Nginx"
 	@echo "  make verify      Pruebas rápidas sin Docker (backend + manifiestos)"
+	@echo "  make api-contract Regenerar OpenAPI y diccionario de APIs"
 	@echo "  make reset-mac   Eliminar volúmenes locales Mac"
 
 mac-up:
@@ -42,3 +43,7 @@ verify:
 
 reset-mac:
 	./scripts/reset-mac.sh
+
+api-contract:
+	python scripts/export_openapi.py
+	python scripts/generate_api_dictionary.py

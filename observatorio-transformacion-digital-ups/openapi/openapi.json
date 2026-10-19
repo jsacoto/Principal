@@ -1,0 +1,2460 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "UPS Digital Transformation Observatory API",
+    "description": "API REST del Observatorio de Transformación Digital de la Universidad Politécnica Salesiana. Expone el modelo D1-D5/O1-O5, el motor IGMD-IOC-IKO-IGTD, el portafolio de iniciativas, la gestión autorizada de avances/evidencias y escenarios de proyección. La ruta canónica es /api/v1; las rutas /api sin versión se mantienen temporalmente por compatibilidad y no se publican en OpenAPI.",
+    "contact": {
+      "name": "Coordinación de Transformación Digital UPS",
+      "email": "transformaciondigital@ups.edu.ec"
+    },
+    "version": "1.0.0",
+    "x-platform-version": "3.1.0",
+    "x-contact-email": "transformaciondigital@ups.edu.ec",
+    "x-swaggerhub-catalog": "https://catalog.swaggerhub.com/?orgId=84d99bc4-2aaa-4509-ad59-92a56e878e5c"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Mismo host del Observatorio"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "api-catalog"
+        ],
+        "summary": "Comprobar disponibilidad de la API",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "tags": [
+          "api-catalog"
+        ],
+        "summary": "Comprobar disponibilidad de API y base de datos",
+        "operationId": "readiness_health_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/observatory/summary": {
+      "get": {
+        "tags": [
+          "observatory"
+        ],
+        "summary": "Get Summary",
+        "operationId": "get_summary_api_v1_observatory_summary_get",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(all|institutional16|reference16)$",
+              "default": "all",
+              "title": "Scope"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutiveSummary"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/observatory/gaps": {
+      "get": {
+        "tags": [
+          "observatory"
+        ],
+        "summary": "Get Gaps",
+        "operationId": "get_gaps_api_v1_observatory_gaps_get",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(all|institutional16|reference16)$",
+              "default": "all",
+              "title": "Scope"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GapResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/observatory/what-if": {
+      "post": {
+        "tags": [
+          "observatory"
+        ],
+        "summary": "Simulate",
+        "operationId": "simulate_api_v1_observatory_what_if_post",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(all|institutional16|reference16)$",
+              "default": "all",
+              "title": "Scope"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WhatIfRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WhatIfResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/observatory/data-quality": {
+      "get": {
+        "tags": [
+          "observatory"
+        ],
+        "summary": "Get Data Quality",
+        "operationId": "get_data_quality_api_v1_observatory_data_quality_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/model/dimensions": {
+      "get": {
+        "tags": [
+          "model"
+        ],
+        "summary": "Dimensions",
+        "operationId": "dimensions_api_v1_model_dimensions_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/model/objectives": {
+      "get": {
+        "tags": [
+          "model"
+        ],
+        "summary": "Objectives",
+        "operationId": "objectives_api_v1_model_objectives_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/model/key-results": {
+      "get": {
+        "tags": [
+          "model"
+        ],
+        "summary": "Key Results",
+        "operationId": "key_results_api_v1_model_key_results_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/model/kpis": {
+      "get": {
+        "tags": [
+          "model"
+        ],
+        "summary": "Kpis",
+        "operationId": "kpis_api_v1_model_kpis_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/model/traceability": {
+      "get": {
+        "tags": [
+          "model"
+        ],
+        "summary": "Traceability",
+        "operationId": "traceability_api_v1_model_traceability_get",
+        "parameters": [
+          {
+            "name": "from_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From Type"
+            }
+          },
+          {
+            "name": "from_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From Key"
+            }
+          },
+          {
+            "name": "to_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To Type"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/initiatives": {
+      "get": {
+        "tags": [
+          "initiatives"
+        ],
+        "summary": "List Initiatives",
+        "operationId": "list_initiatives_api_v1_initiatives_get",
+        "parameters": [
+          {
+            "name": "objective",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Objective"
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(all|reference16)$",
+              "default": "all",
+              "title": "Scope"
+            }
+          },
+          {
+            "name": "include_activities",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Include Activities"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InitiativeOut"
+                  },
+                  "title": "Response List Initiatives Api V1 Initiatives Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/initiatives/{code}": {
+      "get": {
+        "tags": [
+          "initiatives"
+        ],
+        "summary": "Get Initiative",
+        "operationId": "get_initiative_api_v1_initiatives__code__get",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Code"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitiativeOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/initiatives/{code}/verification": {
+      "patch": {
+        "tags": [
+          "initiatives"
+        ],
+        "summary": "Verify Initiative Progress",
+        "operationId": "verify_initiative_progress_api_v1_initiatives__code__verification_patch",
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Code"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitiativeVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitiativeOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Login",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Me",
+        "operationId": "me_api_v1_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Logout",
+        "operationId": "logout_api_v1_auth_logout_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/change-password": {
+      "post": {
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Change Password",
+        "operationId": "change_password_api_v1_auth_change_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/management/initiatives": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Management Initiatives",
+        "operationId": "management_initiatives_api_v1_management_initiatives_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/management/initiatives/{code}": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Management Initiative",
+        "operationId": "management_initiative_api_v1_management_initiatives__code__get",
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Code"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/management/activities/{activity_id}": {
+      "patch": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Update Activity",
+        "operationId": "update_activity_api_v1_management_activities__activity_id__patch",
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "activity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Activity Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivityUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/management/activities/{activity_id}/evidence": {
+      "post": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Upload Evidence",
+        "operationId": "upload_evidence_api_v1_management_activities__activity_id__evidence_post",
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "activity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Activity Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_evidence_api_v1_management_activities__activity_id__evidence_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/management/evidence/{evidence_id}/download": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Download Evidence",
+        "operationId": "download_evidence_api_v1_management_evidence__evidence_id__download_get",
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "evidence_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Evidence Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/management/initiatives/{code}/audit": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Initiative Audit",
+        "operationId": "initiative_audit_api_v1_management_initiatives__code__audit_get",
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Code"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/users": {
+      "get": {
+        "tags": [
+          "administration"
+        ],
+        "summary": "List Users",
+        "operationId": "list_users_api_v1_admin_users_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "administration"
+        ],
+        "summary": "Create User",
+        "operationId": "create_user_api_v1_admin_users_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUserCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/users/{user_id}": {
+      "patch": {
+        "tags": [
+          "administration"
+        ],
+        "summary": "Update User",
+        "operationId": "update_user_api_v1_admin_users__user_id__patch",
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUserUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/initiative-template": {
+      "get": {
+        "tags": [
+          "administration"
+        ],
+        "summary": "Initiative Template",
+        "operationId": "initiative_template_api_v1_admin_initiative_template_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/initiatives": {
+      "post": {
+        "tags": [
+          "administration"
+        ],
+        "summary": "Create Initiative",
+        "operationId": "create_initiative_api_v1_admin_initiatives_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitiativeCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UPSObservatorySession": []
+          }
+        ]
+      }
+    },
+    "/api/v1/forecast/schedule": {
+      "get": {
+        "tags": [
+          "forecasting"
+        ],
+        "summary": "Proyectar la madurez bajo cumplimiento del cronograma",
+        "description": "Escenario determinista de referencia. Proyecta el avance de las actividades que tienen fecha fin, asumiendo que alcanzan 100% en dicha fecha, y recalcula IGMD e IGTD. No representa una predicción probabilística ni un modelo de IA.",
+        "operationId": "forecast_schedule_api_v1_forecast_schedule_get",
+        "parameters": [
+          {
+            "name": "target_date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "Target Date"
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(all|institutional16|reference16)$",
+              "default": "all",
+              "title": "Scope"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/catalog": {
+      "get": {
+        "tags": [
+          "api-catalog"
+        ],
+        "summary": "Diccionario ejecutable de APIs",
+        "operationId": "api_catalog_api_v1_catalog_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActivityOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "external_id": {
+            "type": "string",
+            "title": "External Id"
+          },
+          "parent_external_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent External Id"
+          },
+          "activity_type": {
+            "type": "string",
+            "title": "Activity Type"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "progress": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Progress"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "State"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          },
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date"
+          },
+          "observation": {
+            "type": "string",
+            "title": "Observation",
+            "default": ""
+          },
+          "evidence_count": {
+            "type": "integer",
+            "title": "Evidence Count",
+            "default": 0
+          },
+          "notion_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notion Url"
+          },
+          "assignees": {
+            "items": {
+              "$ref": "#/components/schemas/LeaderOut"
+            },
+            "type": "array",
+            "title": "Assignees",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "external_id",
+          "activity_type",
+          "title"
+        ],
+        "title": "ActivityOut"
+      },
+      "ActivityUpdateRequest": {
+        "properties": {
+          "progress": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 100.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Progress"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "State"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          },
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date"
+          },
+          "observation": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observation"
+          },
+          "justification": {
+            "type": "string",
+            "maxLength": 4000,
+            "minLength": 3,
+            "title": "Justification"
+          }
+        },
+        "type": "object",
+        "required": [
+          "justification"
+        ],
+        "title": "ActivityUpdateRequest"
+      },
+      "AdminUserCreateRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 2,
+            "title": "Name"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 320,
+            "minLength": 5,
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 10,
+            "title": "Password"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "admin",
+              "responsible"
+            ],
+            "title": "Role",
+            "default": "responsible"
+          },
+          "initiative_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Initiative Codes",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
+        "title": "AdminUserCreateRequest"
+      },
+      "AdminUserUpdateRequest": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 180,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "admin",
+                  "responsible"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "initiative_codes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Initiative Codes"
+          }
+        },
+        "type": "object",
+        "title": "AdminUserUpdateRequest"
+      },
+      "Body_upload_evidence_api_v1_management_activities__activity_id__evidence_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_evidence_api_v1_management_activities__activity_id__evidence_post"
+      },
+      "ChangePasswordRequest": {
+        "properties": {
+          "current_password": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 10,
+            "title": "Current Password"
+          },
+          "new_password": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 10,
+            "title": "New Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "current_password",
+          "new_password"
+        ],
+        "title": "ChangePasswordRequest"
+      },
+      "DimensionMetric": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "coverage": {
+            "type": "number",
+            "title": "Coverage"
+          },
+          "maturity": {
+            "type": "number",
+            "title": "Maturity"
+          },
+          "maturity_label": {
+            "type": "string",
+            "title": "Maturity Label"
+          },
+          "weight": {
+            "type": "number",
+            "title": "Weight"
+          },
+          "target": {
+            "type": "number",
+            "title": "Target",
+            "default": 5.0
+          },
+          "initiatives": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Initiatives",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name",
+          "coverage",
+          "maturity",
+          "maturity_label",
+          "weight"
+        ],
+        "title": "DimensionMetric"
+      },
+      "ExecutiveSummary": {
+        "properties": {
+          "igtd": {
+            "type": "number",
+            "title": "Igtd"
+          },
+          "igmd": {
+            "$ref": "#/components/schemas/LayerMetric"
+          },
+          "ioc": {
+            "$ref": "#/components/schemas/LayerMetric"
+          },
+          "iko": {
+            "$ref": "#/components/schemas/LayerMetric"
+          },
+          "layer_weights": {
+            "$ref": "#/components/schemas/LayerWeights"
+          },
+          "dimensions": {
+            "items": {
+              "$ref": "#/components/schemas/DimensionMetric"
+            },
+            "type": "array",
+            "title": "Dimensions"
+          },
+          "objectives": {
+            "items": {
+              "$ref": "#/components/schemas/ObjectiveMetric"
+            },
+            "type": "array",
+            "title": "Objectives"
+          },
+          "reference_maturity": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Reference Maturity"
+          },
+          "heatmap": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Heatmap"
+          },
+          "portfolio_count": {
+            "type": "integer",
+            "title": "Portfolio Count"
+          },
+          "activity_count": {
+            "type": "integer",
+            "title": "Activity Count"
+          },
+          "evidence_count": {
+            "type": "integer",
+            "title": "Evidence Count"
+          },
+          "data_notes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Data Notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "igtd",
+          "igmd",
+          "ioc",
+          "iko",
+          "layer_weights",
+          "dimensions",
+          "objectives",
+          "reference_maturity",
+          "heatmap",
+          "portfolio_count",
+          "activity_count",
+          "evidence_count",
+          "data_notes"
+        ],
+        "title": "ExecutiveSummary"
+      },
+      "GapItem": {
+        "properties": {
+          "initiative": {
+            "type": "string",
+            "title": "Initiative"
+          },
+          "dimension": {
+            "type": "string",
+            "title": "Dimension"
+          },
+          "contribution": {
+            "type": "integer",
+            "title": "Contribution"
+          },
+          "maturity": {
+            "type": "number",
+            "title": "Maturity"
+          },
+          "sensitivity": {
+            "type": "number",
+            "title": "Sensitivity"
+          }
+        },
+        "type": "object",
+        "required": [
+          "initiative",
+          "dimension",
+          "contribution",
+          "maturity",
+          "sensitivity"
+        ],
+        "title": "GapItem"
+      },
+      "GapResponse": {
+        "properties": {
+          "initiatives": {
+            "items": {
+              "$ref": "#/components/schemas/GapItem"
+            },
+            "type": "array",
+            "title": "Initiatives"
+          },
+          "key_results": {
+            "items": {
+              "$ref": "#/components/schemas/KRGapItem"
+            },
+            "type": "array",
+            "title": "Key Results"
+          }
+        },
+        "type": "object",
+        "required": [
+          "initiatives",
+          "key_results"
+        ],
+        "title": "GapResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InitiativeActivityCreate": {
+        "properties": {
+          "external_id": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "External Id"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 3,
+            "title": "Title"
+          },
+          "progress": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 100.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Progress",
+            "default": 0
+          },
+          "state": {
+            "type": "string",
+            "maxLength": 60,
+            "title": "State",
+            "default": "Por Iniciar"
+          },
+          "priority": {
+            "type": "string",
+            "maxLength": 30,
+            "title": "Priority",
+            "default": "Media"
+          },
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date"
+          },
+          "observation": {
+            "type": "string",
+            "maxLength": 4000,
+            "title": "Observation",
+            "default": ""
+          },
+          "in_field": {
+            "type": "string",
+            "maxLength": 1000,
+            "title": "In Field",
+            "default": ""
+          },
+          "responsible_name": {
+            "type": "string",
+            "maxLength": 180,
+            "title": "Responsible Name",
+            "default": ""
+          },
+          "responsible_email": {
+            "type": "string",
+            "maxLength": 320,
+            "title": "Responsible Email",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "external_id",
+          "title"
+        ],
+        "title": "InitiativeActivityCreate"
+      },
+      "InitiativeCreateRequest": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9._-]+$",
+            "title": "Code"
+          },
+          "objective_code": {
+            "type": "string",
+            "enum": [
+              "O1",
+              "O2",
+              "O3",
+              "O4",
+              "O5"
+            ],
+            "title": "Objective Code"
+          },
+          "scope": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Scope"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 5000,
+            "minLength": 10,
+            "title": "Description"
+          },
+          "leader_name": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 2,
+            "title": "Leader Name"
+          },
+          "leader_email": {
+            "type": "string",
+            "maxLength": 320,
+            "title": "Leader Email",
+            "default": ""
+          },
+          "status": {
+            "type": "string",
+            "maxLength": 60,
+            "title": "Status",
+            "default": "Por Iniciar"
+          },
+          "contributions": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Contributions"
+          },
+          "activities": {
+            "items": {
+              "$ref": "#/components/schemas/InitiativeActivityCreate"
+            },
+            "type": "array",
+            "title": "Activities",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "objective_code",
+          "scope",
+          "description",
+          "leader_name",
+          "contributions"
+        ],
+        "title": "InitiativeCreateRequest"
+      },
+      "InitiativeOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "objective_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Objective Code"
+          },
+          "objective_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Objective Name"
+          },
+          "scope": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scope"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "reported_progress": {
+            "type": "number",
+            "title": "Reported Progress"
+          },
+          "verified_progress": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified Progress"
+          },
+          "progress_verified_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Progress Verified At"
+          },
+          "progress_verified_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Progress Verified By"
+          },
+          "progress_verification_note": {
+            "type": "string",
+            "title": "Progress Verification Note",
+            "default": ""
+          },
+          "analytical_progress": {
+            "type": "number",
+            "title": "Analytical Progress"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "notion_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notion Url"
+          },
+          "leaders": {
+            "items": {
+              "$ref": "#/components/schemas/LeaderOut"
+            },
+            "type": "array",
+            "title": "Leaders",
+            "default": []
+          },
+          "contributions": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Contributions",
+            "default": {}
+          },
+          "activities": {
+            "items": {
+              "$ref": "#/components/schemas/ActivityOut"
+            },
+            "type": "array",
+            "title": "Activities",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "title",
+          "description",
+          "reported_progress",
+          "analytical_progress",
+          "status"
+        ],
+        "title": "InitiativeOut"
+      },
+      "InitiativeVerificationRequest": {
+        "properties": {
+          "progress_percent": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Progress Percent"
+          },
+          "verified_by": {
+            "type": "string",
+            "maxLength": 180,
+            "minLength": 2,
+            "title": "Verified By"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 2,
+            "title": "Note"
+          }
+        },
+        "type": "object",
+        "required": [
+          "progress_percent",
+          "verified_by",
+          "note"
+        ],
+        "title": "InitiativeVerificationRequest"
+      },
+      "KRGapItem": {
+        "properties": {
+          "kr": {
+            "type": "string",
+            "title": "Kr"
+          },
+          "compliance": {
+            "type": "number",
+            "title": "Compliance"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kr",
+          "compliance"
+        ],
+        "title": "KRGapItem"
+      },
+      "LayerMetric": {
+        "properties": {
+          "normalized": {
+            "type": "number",
+            "title": "Normalized"
+          },
+          "score_5": {
+            "type": "number",
+            "title": "Score 5"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "color": {
+            "type": "string",
+            "title": "Color"
+          }
+        },
+        "type": "object",
+        "required": [
+          "normalized",
+          "score_5",
+          "label",
+          "color"
+        ],
+        "title": "LayerMetric"
+      },
+      "LayerWeights": {
+        "properties": {
+          "igmd": {
+            "type": "number",
+            "title": "Igmd",
+            "default": 0.5
+          },
+          "ioc": {
+            "type": "number",
+            "title": "Ioc",
+            "default": 0.3
+          },
+          "iko": {
+            "type": "number",
+            "title": "Iko",
+            "default": 0.2
+          }
+        },
+        "type": "object",
+        "title": "LayerWeights"
+      },
+      "LeaderOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "default": "notion"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "role"
+        ],
+        "title": "LeaderOut"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 320,
+            "minLength": 5,
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 10,
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest"
+      },
+      "ObjectiveMetric": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "legacy_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "compliance": {
+            "type": "number",
+            "title": "Compliance"
+          },
+          "score_5": {
+            "type": "number",
+            "title": "Score 5"
+          },
+          "weight": {
+            "type": "number",
+            "title": "Weight"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name",
+          "compliance",
+          "score_5",
+          "weight"
+        ],
+        "title": "ObjectiveMetric"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WhatIfRequest": {
+        "properties": {
+          "initiative_code": {
+            "type": "string",
+            "title": "Initiative Code"
+          },
+          "progress_percent": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Progress Percent"
+          }
+        },
+        "type": "object",
+        "required": [
+          "initiative_code",
+          "progress_percent"
+        ],
+        "title": "WhatIfRequest"
+      },
+      "WhatIfResponse": {
+        "properties": {
+          "initiative_code": {
+            "type": "string",
+            "title": "Initiative Code"
+          },
+          "original_progress_percent": {
+            "type": "number",
+            "title": "Original Progress Percent"
+          },
+          "simulated_progress_percent": {
+            "type": "number",
+            "title": "Simulated Progress Percent"
+          },
+          "original_igmd": {
+            "type": "number",
+            "title": "Original Igmd"
+          },
+          "simulated_igmd": {
+            "type": "number",
+            "title": "Simulated Igmd"
+          },
+          "original_igtd": {
+            "type": "number",
+            "title": "Original Igtd"
+          },
+          "simulated_igtd": {
+            "type": "number",
+            "title": "Simulated Igtd"
+          },
+          "delta_igtd": {
+            "type": "number",
+            "title": "Delta Igtd"
+          },
+          "dimension_deltas": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Dimension Deltas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "initiative_code",
+          "original_progress_percent",
+          "simulated_progress_percent",
+          "original_igmd",
+          "simulated_igmd",
+          "original_igtd",
+          "simulated_igtd",
+          "delta_igtd",
+          "dimension_deltas"
+        ],
+        "title": "WhatIfResponse"
+      }
+    },
+    "securitySchemes": {
+      "UPSObservatorySession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "ups_td_session"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "observatory",
+      "description": "Índices IGMD/IOC/IKO/IGTD, brechas, simulaciones y calidad del dato."
+    },
+    {
+      "name": "model",
+      "description": "Dimensiones D1-D5, objetivos O1-O5, KRs, KPIs y trazabilidad."
+    },
+    {
+      "name": "initiatives",
+      "description": "Consulta pública del portafolio y verificación autorizada de avance."
+    },
+    {
+      "name": "authentication",
+      "description": "Inicio/cierre de sesión y gestión de contraseña."
+    },
+    {
+      "name": "management",
+      "description": "Actualización autorizada de actividades, evidencias y auditoría."
+    },
+    {
+      "name": "administration",
+      "description": "Usuarios, permisos y creación de iniciativas basada en plantilla institucional."
+    },
+    {
+      "name": "forecasting",
+      "description": "Escenarios de proyección de madurez basados en cronogramas."
+    },
+    {
+      "name": "api-catalog",
+      "description": "Diccionario ejecutable de APIs y relación con el cliente frontend."
+    }
+  ],
+  "x-api-lifecycle": "active",
+  "x-api-version-prefix": "/api/v1"
+}

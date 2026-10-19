@@ -198,3 +198,17 @@ class InitiativeCreateRequest(BaseModel):
     status: str = Field(default="Por Iniciar", max_length=60)
     contributions: dict[str, int]
     activities: list[InitiativeActivityCreate] = []
+
+
+class ScheduleForecastResponse(BaseModel):
+    model: str
+    generated_on: date
+    target_date: date
+    scope: str
+    assumption: str
+    current: dict
+    projected: dict
+    delta: dict
+    schedule_coverage: dict
+    initiatives: list[dict]
+    limitations: list[str]

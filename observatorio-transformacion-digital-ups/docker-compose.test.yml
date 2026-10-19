@@ -97,7 +97,8 @@ services:
       - -ec
       - |
         curl -fsS http://api-smoke:8000/health/ready
-        curl -fsS 'http://api-smoke:8000/api/observatory/summary?scope=all' >/dev/null
+        curl -fsS 'http://api-smoke:8000/api/v1/observatory/summary?scope=all' >/dev/null
+        curl -fsS 'http://api-smoke:8000/api/v1/catalog' >/dev/null
         curl -fsS http://web-smoke:3000 >/dev/null
         curl -fsS http://web-smoke:3000/model >/dev/null
         curl -fsS http://web-smoke:3000/dimensions >/dev/null

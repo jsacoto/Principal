@@ -7,7 +7,7 @@ from ..database import get_db
 from ..models import Dimension, KPI, KeyResult, Objective, TraceabilityRecord
 from ..engine import normalize_kpi, normalize_kr
 
-router = APIRouter(prefix="/api/model", tags=["model"])
+router = APIRouter(prefix="/model", tags=["model"])
 
 
 @router.get("/dimensions")

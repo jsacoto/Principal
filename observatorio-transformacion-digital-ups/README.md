@@ -2,7 +2,7 @@
 
 Plataforma full-stack para **medición pública, gobernanza y trazabilidad autorizada** de la Transformación Digital de la Universidad Politécnica Salesiana (UPS).
 
-La versión 2.0 separa claramente dos espacios:
+La versión 3.1 mantiene la separación entre portal público y gestión autorizada, y añade un **contrato API versionado**, publicación automatizable en SwaggerHub y una línea base de pronóstico por cronograma:
 
 1. **Portal público del Observatorio**: dashboard del Índice de Transformación Digital, modelo institucional, descripción de las dimensiones y contacto.
 2. **Espacio de gestión autorizado**: responsables de iniciativas, actualización de actividades, justificaciones, evidencias, auditoría, usuarios y creación de nuevas iniciativas.
@@ -196,33 +196,54 @@ Producción expone únicamente **Nginx**. PostgreSQL, API y Web permanecen en la
 | `docker-compose.server.yml` | Producción con Nginx, PostgreSQL y volumen de evidencias |
 | `docker-compose.yml` | Stack local production-like |
 
-## Endpoints nuevos de autorización y gestión
+## API REST versionada
+
+El contrato canónico es **`/api/v1`**. Las rutas antiguas `/api/...` se conservan temporalmente para compatibilidad, pero quedan fuera de OpenAPI/SwaggerHub. El frontend consume exclusivamente `/backend/api/v1`.
+
+Puntos de documentación:
+
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+- OpenAPI JSON: `http://localhost:8000/openapi.json`
+- Diccionario ejecutable: `GET /api/v1/catalog`
+- Contrato versionado en Git: `openapi/openapi.json`
+- Diccionario humano: `docs/API_DICTIONARY.md`
+
+Grupos principales:
 
 ```text
-POST  /api/auth/login
-GET   /api/auth/me
-POST  /api/auth/logout
-POST  /api/auth/change-password
-
-GET   /api/management/initiatives
-GET   /api/management/initiatives/{code}
-PATCH /api/management/activities/{activity_id}
-POST  /api/management/activities/{activity_id}/evidence
-GET   /api/management/evidence/{evidence_id}/download
-GET   /api/management/initiatives/{code}/audit
-
-GET   /api/admin/users
-POST  /api/admin/users
-PATCH /api/admin/users/{user_id}
-GET   /api/admin/initiative-template
-POST  /api/admin/initiatives
+/api/v1/observatory/*   índices, brechas, what-if y calidad
+/api/v1/model/*         D1-D5, O1-O5, KRs, KPIs y trazabilidad
+/api/v1/initiatives/*   portafolio público y verificación
+/api/v1/auth/*          autenticación
+/api/v1/management/*    gestión autorizada, auditoría y evidencias
+/api/v1/admin/*         usuarios, permisos y nuevas iniciativas
+/api/v1/forecast/*      escenarios de proyección
+/api/v1/catalog         diccionario de APIs
 ```
 
-El endpoint histórico `PATCH /api/initiatives/{code}/verification` también quedó protegido por autenticación y permiso de iniciativa.
+El endpoint de verificación sigue protegido por autenticación y permiso por iniciativa.
+
+
+## SwaggerHub Catalog
+
+El repositorio incluye `.github/workflows/swaggerhub-openapi.yml` para sincronizar el contrato con el catálogo suministrado:
+
+`https://catalog.swaggerhub.com/?orgId=84d99bc4-2aaa-4509-ad59-92a56e878e5c`
+
+La publicación requiere configurar en GitHub Actions el secret `SWAGGERHUB_API_KEY` y la variable `SWAGGERHUB_OWNER`. El workflow genera el contrato desde FastAPI, ejecuta tests y crea/actualiza la versión en SwaggerHub. Consulte `docs/SWAGGERHUB.md`.
+
+## Pronóstico de madurez
+
+La versión 3.1 añade una línea base determinista:
+
+`GET /api/v1/forecast/schedule?target_date=YYYY-MM-DD&scope=all`
+
+Responde a la pregunta: **“¿qué madurez alcanzaría la UPS si se cumplen los cronogramas registrados?”**. No se presenta como IA: sirve como referencia auditable antes de incorporar modelos probabilísticos. La propuesta de evolución hacia IA/LLM está en `docs/AI_FORECASTING_ROADMAP.md`.
 
 ## Validación
 
-La versión 2.0 ejecuta **11/11 tests backend** y cubre, además del motor matemático:
+La versión 3.1 ejecuta **15/15 tests backend** y cubre, además del motor matemático:
 
 - login administrativo;
 - creación de responsable;
@@ -231,7 +252,11 @@ La versión 2.0 ejecuta **11/11 tests backend** y cubre, además del motor matem
 - actualización justificada de actividad;
 - registro de auditoría;
 - carga y descarga autorizada de evidencia;
-- plantilla y creación de nueva iniciativa.
+- plantilla y creación de nueva iniciativa;
+- contrato canónico `/api/v1` y compatibilidad legacy;
+- seguridad de cookie declarada en OpenAPI;
+- diccionario ejecutable de APIs;
+- escenario de proyección de madurez por cronograma.
 
 Consulte `docs/VALIDATION_REPORT.md`.
 

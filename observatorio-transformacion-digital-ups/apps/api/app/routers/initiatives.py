@@ -9,7 +9,7 @@ from ..models import Activity, ActivityAssignee, Initiative, InitiativeDimension
 from ..schemas import ActivityOut, InitiativeOut, InitiativeVerificationRequest, LeaderOut
 from ..services.auth import ensure_initiative_access, get_current_user
 
-router = APIRouter(prefix="/api/initiatives", tags=["initiatives"])
+router = APIRouter(prefix="/initiatives", tags=["initiatives"])
 
 
 def leader_out(name: str | None, email: str | None, role: str, source: str) -> LeaderOut:

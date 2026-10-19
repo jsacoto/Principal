@@ -22,7 +22,7 @@ from ..models import (
 from ..schemas import AdminUserCreateRequest, AdminUserUpdateRequest, InitiativeCreateRequest
 from ..services.auth import hash_password, require_admin
 
-router = APIRouter(prefix="/api/admin", tags=["administration"])
+router = APIRouter(prefix="/admin", tags=["administration"])
 
 STATE_OPTIONS = ["En desarrollo", "Completo", "Iniciado", "Por Iniciar", "No Iniciado"]
 PRIORITY_OPTIONS = ["Alta", "Media", "Baja"]

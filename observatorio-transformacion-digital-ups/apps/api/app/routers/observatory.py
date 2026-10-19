@@ -6,7 +6,7 @@ from ..database import get_db
 from ..schemas import ExecutiveSummary, GapResponse, WhatIfRequest, WhatIfResponse
 from ..services.analytics import data_quality, executive_summary, gaps, what_if
 
-router = APIRouter(prefix="/api/observatory", tags=["observatory"])
+router = APIRouter(prefix="/observatory", tags=["observatory"])
 
 
 @router.get("/summary", response_model=ExecutiveSummary)

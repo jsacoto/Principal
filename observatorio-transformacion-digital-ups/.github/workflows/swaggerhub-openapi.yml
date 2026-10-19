@@ -1,0 +1,88 @@
+name: OpenAPI - SwaggerHub Catalog
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'observatorio-transformacion-digital-ups/apps/api/**'
+      - 'observatorio-transformacion-digital-ups/scripts/export_openapi.py'
+      - 'observatorio-transformacion-digital-ups/scripts/generate_api_dictionary.py'
+      - 'observatorio-transformacion-digital-ups/openapi/**'
+      - 'observatorio-transformacion-digital-ups/.github/workflows/swaggerhub-openapi.yml'
+      - '.github/workflows/ups-observatory-swaggerhub.yml'
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    env:
+      SWAGGERHUB_API_KEY: ${{ secrets.SWAGGERHUB_API_KEY }}
+      SWAGGERHUB_OWNER: ${{ vars.SWAGGERHUB_OWNER }}
+      SWAGGERHUB_API_NAME: ${{ vars.SWAGGERHUB_API_NAME || 'ups-digital-transformation-observatory' }}
+      SWAGGERHUB_API_VERSION: ${{ vars.SWAGGERHUB_API_VERSION || '1.0.0' }}
+      SWAGGERHUB_VISIBILITY: ${{ vars.SWAGGERHUB_VISIBILITY || 'private' }}
+    defaults:
+      run:
+        working-directory: observatorio-transformacion-digital-ups
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install API dependencies
+        run: pip install -r apps/api/requirements-dev.txt
+
+      - name: Test backend contract
+        run: |
+          cd apps/api
+          pytest -q
+
+      - name: Export OpenAPI and API dictionary
+        run: |
+          python scripts/export_openapi.py
+          python scripts/generate_api_dictionary.py
+
+      - name: Upload generated contract as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ups-observatory-openapi
+          path: |
+            observatorio-transformacion-digital-ups/openapi/openapi.json
+            observatorio-transformacion-digital-ups/docs/API_DICTIONARY.md
+
+      - uses: actions/setup-node@v4
+        if: ${{ env.SWAGGERHUB_API_KEY != '' && env.SWAGGERHUB_OWNER != '' }}
+        with:
+          node-version: '22'
+
+      - name: Install SwaggerHub CLI
+        if: ${{ env.SWAGGERHUB_API_KEY != '' && env.SWAGGERHUB_OWNER != '' }}
+        run: npm install -g swaggerhub-cli
+
+      - name: Publish/update API definition in SwaggerHub
+        if: ${{ env.SWAGGERHUB_API_KEY != '' && env.SWAGGERHUB_OWNER != '' }}
+        run: |
+          set -euo pipefail
+          TARGET="$SWAGGERHUB_OWNER/$SWAGGERHUB_API_NAME/$SWAGGERHUB_API_VERSION"
+          if swaggerhub api:get "$TARGET" >/dev/null 2>&1; then
+            swaggerhub api:update "$TARGET" \
+              --file openapi/openapi.json \
+              --visibility "$SWAGGERHUB_VISIBILITY" \
+              --published publish \
+              --setdefault
+          else
+            swaggerhub api:create "$TARGET" \
+              --file openapi/openapi.json \
+              --visibility "$SWAGGERHUB_VISIBILITY" \
+              --published publish \
+              --setdefault
+          fi
+          echo "SwaggerHub contract synchronized: $TARGET"
+
+      - name: Explain skipped SwaggerHub publication
+        if: ${{ env.SWAGGERHUB_API_KEY == '' || env.SWAGGERHUB_OWNER == '' }}
+        run: |
+          echo "OpenAPI contract generated and tested."
+          echo "SwaggerHub publication skipped: configure SWAGGERHUB_API_KEY and SWAGGERHUB_OWNER in repository Actions settings."
