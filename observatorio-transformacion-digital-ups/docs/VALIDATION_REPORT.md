@@ -89,3 +89,12 @@ Docker Engine no esta instalado en este entorno de construccion; por ello no se 
 Ese flujo construye imagenes reales, ejecuta PostgreSQL efimero, tests backend, `next build` y smoke test full-stack.
 
 La publicacion real en SwaggerHub tampoco se ejecuta desde este workspace porque no dispone de credenciales SwaggerHub del usuario. Una vez configurados `SWAGGERHUB_API_KEY` y `SWAGGERHUB_OWNER` en GitHub Actions, el workflow realiza create/update, publish y set-default del contrato.
+
+## Revisión de la versión adjunta v3
+
+- Se comparó `ups-digital-observatory-v3.zip` con la versión vigente.
+- El diff del motor contiene únicamente documentación/comentarios; las ecuaciones institucionales permanecen sin cambios.
+- Se añadió una suite de regresión matemática específica para C_d/M_d/IGMD, IOC/IKO/IGTD, bandas de madurez y sensibilidad.
+- Los cambios frontend de la versión adjunta son de formato del código y no alteran la interfaz renderizada; no se aplicaron para evitar ruido y preservar las mejoras posteriores.
+- Resultado de la suite backend después de la integración: **19/19 tests passed**.
+- Detalle: `docs/REVIEW_ATTACHED_V3.md`.

@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
@@ -32,6 +31,8 @@ def _portfolio_inputs(db: Session, scope: str = "all"):
             children = [by_code[c] for c in child_codes if c in by_code]
             if not children:
                 continue
+            # Los desdoblamientos a/b son tracks operativos del mismo número institucional.
+            # Para la vista de 16 se usa la media simple de los tracks disponibles.
             progress[group_code] = sum(i.analytical_progress for i in children) / len(children)
             matrix[group_code] = {}
             for d in dimensions:
@@ -39,6 +40,8 @@ def _portfolio_inputs(db: Session, scope: str = "all"):
                     next((c.contribution_level for c in i.contributions if c.dimension.code == d.code), 0)
                     for i in children
                 ]
+                # La intensidad del grupo se toma como el máximo de sus tracks para no
+                # duplicar el peso de iniciativas que fueron desdobladas en Notion.
                 matrix[group_code][d.code] = max(levels) if levels else 0
         return initiatives, dimensions, progress, matrix, len(progress)
 
@@ -72,6 +75,7 @@ def compute_layers(db: Session, scope: str = "all", progress_override: dict[str,
             for kr, value in zip(krs, normalized):
                 kr_scores[kr.code] = value
             weights = [kr.weight for kr in krs]
+            # Demo data is seeded with valid per-objective weights. For editable data, normalize if incomplete.
             total = sum(weights)
             if total <= 0:
                 weights = [1 / len(krs)] * len(krs)

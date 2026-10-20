@@ -30,6 +30,7 @@ def seed_database(db: Session, force: bool = False) -> None:
         return
 
     if force:
+        # Development helper; cascading from initiatives removes activities and links.
         for model in [TraceabilityRecord, KPI, KeyResult, InitiativeDimension, ActivityAssignee, Evidence, Activity, InitiativeLeader, Initiative, Objective, Dimension]:
             db.query(model).delete()
         db.commit()
@@ -90,6 +91,7 @@ def seed_database(db: Session, force: bool = False) -> None:
                         notion_user_id=user_id, source="notion_activity"
                     ))
             else:
+                # Transparent fallback only where the source row did not expose a responsible person.
                 for leader in item["leaders"]:
                     db.add(ActivityAssignee(
                         activity_id=activity.id, name=leader["name"], email=leader.get("email"),
@@ -152,6 +154,7 @@ def seed_database(db: Session, force: bool = False) -> None:
                     relation="operationalized_by", source="demo_seed"
                 ))
 
+    # Explicit objective -> dimension traceability from the heatmap seed.
     for objective, dim_levels in OBJECTIVE_DIMENSION_HEATMAP.items():
         for dimension, level in dim_levels.items():
             if level > 0:

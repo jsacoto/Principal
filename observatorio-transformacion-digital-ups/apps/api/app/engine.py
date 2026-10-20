@@ -44,6 +44,8 @@ def weighted_sum(values: Sequence[float], weights: Sequence[float]) -> float:
 
 
 def maturity_label(maturity: float) -> str:
+    # The formal UPS bands are expressed to one decimal (0.0–1.0, 1.1–2.5, ...).
+    # Classify on the displayed one-decimal score so boundary semantics remain exact.
     m = round(max(0.0, min(5.0, maturity)), 1)
     if m <= 1.0:
         return "Inicial"
@@ -57,6 +59,7 @@ def maturity_label(maturity: float) -> str:
 
 
 def dimension_coverage(progress_by_initiative: Mapping[str, float], contribution_by_initiative: Mapping[str, int]) -> tuple[float, float]:
+    """C_d = sum(E_i * I_i,d) / sum(I_i,d). E_i is [0,1], I is {0,1,2,3}."""
     denominator = 0.0
     numerator = 0.0
     for initiative, contribution in contribution_by_initiative.items():
@@ -88,6 +91,12 @@ def igmd(dimension_results: Sequence[DimensionResult], dimension_weights: Sequen
 
 
 def normalize_kr(current: float, target: float, direction: str) -> float:
+    """
+    Formal model:
+      growth / achievement: min(1, x/m)
+      reduction_achievement: min(1, r/r*) where r is the reduction achieved
+    The engine also supports lower_is_better for KRs expressed as the raw level to minimize.
+    """
     if target <= 0 and direction in {"growth", "reduction_achievement"}:
         raise ValueError("Target must be > 0")
     if direction in {"growth", "reduction_achievement"}:
@@ -130,6 +139,7 @@ def igtd(igmd_value: float, ioc5_value: float, iko5_value: float, layer_weights:
 
 
 def sensitivity(contribution_level: int, dimension_denominator: float) -> float:
+    """Delta M_d / Delta E_i = 5 * I_i,d / sum_i(I_i,d)."""
     if contribution_level not in (0, 1, 2, 3):
         raise ValueError("Contribution level must be one of 0,1,2,3")
     if dimension_denominator <= EPSILON:

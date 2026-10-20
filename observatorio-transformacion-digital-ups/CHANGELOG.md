@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.1.1 - Revisión de mejoras adjuntas y contrato matemático
+
+- Revisada la versión adjunta `ups-digital-observatory-v3.zip` frente a la rama vigente.
+- Confirmado que las fórmulas C_d, M_d, IGMD, IOC, IKO, IGTD y sensibilidad no cambian.
+- Integrados docstrings/comentarios útiles del motor, seed y agregación del modelo 16 sin alterar comportamiento.
+- Añadida suite `test_model_regression.py` para bloquear regresiones del modelo formal UPS.
+- No se incorporó formateo frontend sin impacto visual/funcional; se preservan API v1, SwaggerHub, forecasting y manual v3.1.
+- Informe técnico: `docs/REVIEW_ATTACHED_V3.md`.
+
 ## 3.1.0 - API Governance, SwaggerHub & Forecast Baseline
 
 - Contrato REST canonico versionado bajo `/api/v1` con compatibilidad legacy oculta del OpenAPI.
